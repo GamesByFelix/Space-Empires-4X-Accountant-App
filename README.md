@@ -8,5 +8,5 @@ It's designed for mouse control, so that you only need a small bluetooth mouse o
 
 The app is presented as a single HTML file for easier portability and offline-play.
 
-License: Creative Commons 4.0 CC-BY-NC
+License: Creative Commons 4.0 CC-BY-NC  
 https://gamesbyfelix.com
