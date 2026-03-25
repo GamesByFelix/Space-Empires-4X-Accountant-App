@@ -7,3 +7,6 @@ It offers an automated Production table and interactive Technology and Ship tabl
 It's designed for mouse control, so that you only need a small bluetooth mouse on your gaming table and a line of sight to your monitor or tablet.
 
 The app is presented as a single HTML file for easier portability and offline-play.
+
+License: Creative Commons 4.0 CC-BY-NC
+https://gamesbyfelix.com
