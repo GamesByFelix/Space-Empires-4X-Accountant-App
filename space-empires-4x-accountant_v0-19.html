@@ -1,0 +1,5721 @@
+<!-- 
+	"Space Empires 4X Accountant" Web App
+	License: Creative Commons 4.0 CC-BY-NC
+	https://gamesbyfelix.com
+	-->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Space Empires 4X Accountant</title>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=1"
+		/>
+		<!-- <meta name="viewport" content="width=714px, initial-scale=1.0, maximum-scale=2.0, user-scalable=1" /> -->
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="theme-color" content="#000000" />
+		<!-- <link rel="manifest" href="/manifest.json" /> -->
+		<!-- <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" /> -->
+		<!-- <link rel="icon" href="/images/icons/icon-512x512.png">
+			<link rel="icon" type="image/x-icon" href="/images/icons/favicon.png" /> -->
+		<meta name="description" content="Space Empires 4X Accountant" />
+
+		<style>
+			.theme-dark {
+				--bg: #000000;
+				--bg2: #222222;
+				--txt: #ffffff;
+				--txt2: #999999;
+				--hilite: #444444;
+				--altRow: #181818;
+				--tblBorder: #bbbbbb;
+				--tblBorder2: #666666;
+				--warning: #ff0000;
+			}
+			.theme-green {
+				--acc: #226e15;
+			}
+			.theme-blue {
+				--acc: #16577c;
+			}
+			.theme-red {
+				--acc: #7d1313;
+			}
+			.theme-yellow {
+				--acc: #78640d;
+			}
+			* {
+				box-sizing: border-box;
+			}
+
+			html,
+			body {
+				font-family: sans-serif;
+				font-size: 16px;
+				background-color: var(--bg);
+				color: var(--txt);
+				margin: 0;
+				padding: 0;
+				height: 100%;
+				width: 100%;
+			}
+
+			a {
+				color: var(--txt);
+				text-decoration: underline;
+			}
+
+			button:active {
+				background-color: var(--tblBorder);
+			}
+
+			#divContainerGame {
+				visibility: hidden;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 0px;
+				overflow: hidden;
+			}
+
+			#divContainerTables {
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				flex: 1;
+				overflow-y: auto;
+			}
+
+			#divContainerBottomRow {
+				width: 100%;
+				margin: 0;
+				padding: 0.5em;
+				min-height: 3em;
+				background-color: var(--bg2);
+				border: 2px solid var(--tblBorder);
+			}
+
+			#divContainerEconTech {
+				scrollbar-gutter: stable both-edges;
+
+				width: 100%;
+				margin: 10px 0 10px 0;
+				padding: 0;
+				display: flex;
+				flex-direction: row;
+				gap: 10px;
+			}
+
+			#divProd {
+				flex: 1;
+				width: 50%;
+				overflow-x: scroll;
+				padding: 0;
+				border: 2px solid var(--tblBorder);
+			}
+
+			#divTech {
+				padding: 0;
+				min-width: 30%;
+				display: flex;
+				gap: 10px;
+				flex-direction: column;
+			}
+
+			#divLog {
+				width: 99.3%;
+				flex: 1;
+				border: 2px solid var(--tblBorder);
+			}
+
+			#divShip {
+				width: 100%;
+				margin-bottom: 10px;
+			}
+
+			#divDM {
+				display: none;
+				border: 2px solid var(--tblBorder);
+				margin-bottom: 10px;
+			}
+
+			#divNumPad {
+				display: none;
+				position: fixed;
+				top: 0%;
+				left: 0%;
+				background-color: var(--acc);
+				border: 2px solid var(--tblBorder);
+				padding: 0.2em;
+			}
+
+			#divHelp,
+			#divNewGame {
+				display: none;
+				position: fixed;
+				top: 5%;
+				left: 50%;
+				transform: translateX(-50%);
+				background-color: var(--bg);
+				min-width: 25ch;
+				max-width: 70%;
+				min-height: 15em;
+				max-height: 90%;
+				z-index: 600;
+				border: 2px solid var(--tblBorder);
+				padding: 0.5em;
+				margin: 0;
+				z-index: 800;
+				line-height: 1.5em;
+				overflow-y: auto;
+				scrollbar-gutter: stable both-edges;
+			}
+
+			#divDice {
+				display: none;
+				position: fixed;
+				top: 10px;
+				left: 5px;
+				background-color: var(--bg);
+				min-width: 25ch;
+				max-width: 90%;
+				min-height: 15em;
+				max-height: 90%;
+				border: 2px solid var(--tblBorder);
+				padding: 0.5em;
+				margin: 0;
+				z-index: 700;
+				overflow-y: auto;
+				scrollbar-gutter: stable both-edges;
+			}
+
+			#divNotes {
+				display: none;
+				position: fixed;
+				top: 10px;
+				left: 5px;
+				max-width: 90%;
+				background-color: var(--bg);
+				z-index: 650;
+				border: 2px solid var(--tblBorder);
+				padding: 0.5em;
+				margin: 0;
+				overflow-y: auto;
+				scrollbar-gutter: stable both-edges;
+			}
+
+			#divHelpBG,
+			#divNewGameBG {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #000000aa;
+				z-index: 799;
+			}
+
+			#divInfo {
+				font-size: 12px;
+				display: none;
+				box-sizing: border-box;
+				top: 10px;
+				left: 5px;
+				background-color: var(--acc);
+				min-width: 20ch;
+				max-width: 90%;
+				min-height: 5em;
+				max-height: 90%;
+				z-index: 400;
+				border: 2px solid var(--tblBorder2);
+				padding: 0.5em;
+				margin: 0;
+				line-height: 1.5em;
+				overflow: auto;
+			}
+
+			.draggable {
+				position: fixed;
+				user-select: none;
+				touch-action: none;
+			}
+
+			.handle {
+				display: inline-block;
+				width: calc(99% - 2ch);
+				cursor: grab;
+				user-select: none;
+				background-color: #ffffff44;
+			}
+
+			#divInfo table,
+			#divInfo tr,
+			#divInfo td {
+				background-color: unset;
+				border: none;
+				padding-left: 0;
+				padding-right: 1em;
+				margin-left: 0;
+				border-collapse: collapse;
+			}
+
+			.tblProd {
+				/* border: 2px solid #bbbbbb; */
+				margin: 0;
+				padding: 0;
+				border-collapse: separate;
+				border-spacing: 0;
+				table-layout: fixed;
+				background-color: var(--bg);
+			}
+
+			.tblTech {
+				display: inline-block;
+				border: 2px solid #bbbbbb;
+				margin: 0;
+				padding: 0;
+				border-collapse: collapse;
+				table-layout: fixed;
+				background-color: var(--bg);
+			}
+
+			.tblShip {
+				display: table;
+				width: 100%;
+				display: inline-block;
+				border: 2px solid #bbbbbb;
+				margin: 0;
+				padding: 0;
+				border-collapse: collapse;
+				table-layout: fixed;
+				background-color: var(--bg);
+			}
+
+			.tblShip th {
+				text-align: center;
+			}
+			.tblShip td {
+				border: 1px dashed var(--tblBorder2);
+				white-space: nowrap;
+			}
+
+			.tblShip div {
+				display: inline-block;
+				margin-right: 0.1em;
+				cursor: pointer;
+				min-width: 2ch;
+				text-align: center;
+			}
+
+			.tblShip label {
+				/* display: inline-block; */
+				/* width: 100%; */
+				padding: 0;
+				margin: 0;
+			}
+
+			.tblDM {
+				display: table;
+				width: 100%;
+				display: inline-block;
+				border: 2px solid #bbbbbb;
+				margin: 0;
+				padding: 0;
+				border-collapse: collapse;
+				table-layout: fixed;
+				background-color: var(--bg);
+			}
+
+			.tblDM th {
+				text-align: center;
+				min-width: 9ch;
+			}
+			.tblDM td {
+				border: 1px dashed var(--tblBorder2);
+				white-space: nowrap;
+				text-align: center;
+			}
+
+			th,
+			td {
+				border-right: 1px dashed var(--tblBorder2);
+				text-align: left;
+				vertical-align: top;
+				padding: 0.2em;
+				background-color: var(--bg);
+			}
+
+			.tblProd th,
+			.tblTech th {
+				border-bottom: 2px solid var(--tblBorder);
+			}
+
+			.tblProd td {
+				border-bottom: 1px dashed var(--tblBorder2);
+			}
+
+			.tblTech td {
+				border: 1px dashed var(--tblBorder2);
+			}
+
+			.tblKBShortcuts,
+			.tblKBShortcuts td,
+			.tblKBShortcuts th {
+				border: none;
+				padding: 0;
+				margin: 0;
+				border-collapse: collapse;
+			}
+
+			input[type="text"],
+			input[type="number"] {
+				width: 5ch;
+				height: 100%;
+				background-color: unset;
+				color: var(--txt);
+				border: none;
+				margin: 0;
+				font-size: inherit;
+				text-align: center;
+			}
+
+			input[type="text"].txtShipNotes {
+				text-align: left;
+				width: 100%;
+				min-width: 10ch;
+			}
+
+			input[type="checkbox"] {
+				accent-color: var(--acc);
+			}
+			label {
+				margin-right: 1em;
+				text-align: left;
+				font-size: inherit;
+				cursor: pointer;
+			}
+
+			button,
+			select {
+				cursor: pointer;
+				color: var(--txt);
+				background-color: var(--acc);
+				border-radius: 5px;
+				border: none;
+				height: 1.6em;
+				padding: 0em 0.4em;
+				font-size: inherit;
+				box-shadow: 3px 3px #333333;
+			}
+
+			textarea {
+				width: 5ch;
+				height: 100%;
+				resize: vertical;
+				background-color: unset;
+				color: var(--txt);
+				border: none;
+				margin: 0;
+				font-size: inherit;
+				text-align: center;
+			}
+
+			#txtLog {
+				width: 100%;
+				padding: 0.3em;
+				resize: none;
+				color: var(--txt2);
+				font-size: 0.8rem;
+				background-color: var(--bg2);
+				text-align: left;
+				height: 100%;
+			}
+
+			#txtNotes {
+				width: 60ch;
+				max-width: 100%;
+				padding: 0.3em;
+				resize: none;
+				background-color: var(--bg2);
+				text-align: left;
+				height: 10em;
+			}
+
+			.topBorder > * {
+				border-top: 2px solid var(--tblBorder);
+			}
+
+			.txtLeft {
+				text-align: left;
+			}
+
+			.txtRight {
+				text-align: right;
+			}
+
+			.txtCenter {
+				text-align: center;
+			}
+
+			.txtSmall {
+				font-size: 12px;
+				color: var(--txt2);
+				line-height: 1.2em;
+			}
+
+			.txtBold {
+				font-weight: bold;
+			}
+
+			.txtPrice {
+				font-size: 12px;
+				color: var(--txt2);
+			}
+
+			.txtPriceRed {
+				color: var(--warning);
+			}
+
+			button.bgRed {
+				background-color: var(--warning);
+			}
+
+			.btnSquare {
+				width: 1.4em;
+				height: 1.4em;
+				color: var(--bg);
+				text-align: center;
+				vertical-align: 0em;
+				padding: 0;
+				background-color: var(--txt);
+			}
+
+			.btnAddShip,
+			.btnRemoveShip,
+			.btnDMhull,
+			.btnNumPad {
+				width: 1.4em;
+				height: 1.4em;
+				color: var(--txt);
+				text-align: center;
+				vertical-align: 0em;
+				padding: 0;
+				background-color: var(--acc);
+			}
+
+			.btnNumPad {
+				margin: 0.1em;
+				background-color: var(--txt2);
+			}
+
+			.btnDark {
+				background-color: var(--tblBorder2);
+			}
+			.helpIcon {
+				font-size: 12px;
+				color: var(--txt2);
+				text-decoration: underline;
+				vertical-align: super;
+				cursor: help;
+			}
+
+			.txtNormal {
+				font-weight: normal;
+				font-size: 1rem;
+			}
+			.fixedW1 {
+				min-width: 24ch;
+				border-right: 2px solid var(--tblBorder);
+				white-space: nowrap;
+			}
+
+			.fixedW2 {
+				border-right: 2px solid var(--tblBorder);
+				white-space: nowrap;
+			}
+
+			.hilite {
+				background-color: var(--hilite);
+				font-style: italic;
+			}
+
+			.lowRow {
+				font-size: 10px;
+				height: 1em;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			.noBorderRight {
+				border-right: none;
+			}
+			.tblProd th:first-child,
+			.tblProd td:first-child {
+				position: sticky;
+				left: 0;
+			}
+
+			.prodPhaseLabel {
+				cursor: pointer;
+			}
+
+			.techLabel {
+				min-width: 18ch;
+			}
+			.techProgLvl {
+				cursor: pointer;
+				width: 4ch;
+				white-space: nowrap;
+			}
+			input.techProgNum {
+				width: 3ch;
+				height: 1em;
+				font-size: inherit;
+				border-bottom: 2px solid var(--hilite);
+				text-align: left;
+			}
+			.techProgActive {
+				background-color: var(--acc);
+			}
+
+			#divUNStats {
+				width: 100%;
+				display: flex;
+				gap: 10px;
+				line-height: normal;
+				vertical-align: middle;
+				align-items: baseline;
+			}
+
+			#txtUNCost,
+			#txtUNMaint {
+				width: 4ch;
+				height: 1em;
+				font-size: inherit;
+				text-align: center;
+				border-bottom: 2px solid var(--hilite);
+			}
+			#txtUNInfos {
+				flex: 1;
+				height: 1em;
+				font-size: inherit;
+				text-align: left;
+				border-bottom: 2px solid var(--hilite);
+			}
+
+			.shipTechAvailable.shipTechActive,
+			.shipTechActive {
+				background-color: var(--acc);
+			}
+
+			.shipTechAvailable {
+				background-color: var(--hilite);
+			}
+
+			.alternateShipRow {
+				background-color: var(--altRow);
+			}
+
+			.tdDiceChecks {
+				min-width: 4ch;
+				border: none;
+				padding: 0;
+				margin: 0;
+			}
+
+			.tdDice {
+				min-width: 4ch;
+				height: 2em;
+				line-height: 2em;
+				vertical-align: middle;
+				cursor: pointer;
+				border: none;
+				padding: 0;
+				margin: 0;
+				border: 2px solid var(--bg);
+			}
+
+			.bgTheme {
+				background-color: var(--acc);
+				color: var(--txt);
+			}
+
+			.bgInv {
+				color: var(--bg);
+				background-color: var(--txt);
+			}
+
+			.pointer {
+				cursor: pointer;
+			}
+
+			.tblDice {
+				padding: 0;
+				margin: 0;
+				border-collapse: collapse;
+			}
+
+			/* Chrome, Safari, Edge, Opera */
+			input[type="number"]::-webkit-inner-spin-button,
+			input[type="number"]::-webkit-outer-spin-button {
+				-webkit-appearance: none;
+				margin: 0;
+			}
+
+			/* Firefox */
+			input[type="number"] {
+				-moz-appearance: textfield;
+			}
+
+			/* For Chrome, Edge, Safari (WebKit browsers) */
+			::-webkit-scrollbar {
+				width: 12px; /* optional — scrollbar thickness */
+			}
+
+			::-webkit-scrollbar-track {
+				background: black; /* the scrollbar background */
+			}
+
+			::-webkit-scrollbar-thumb {
+				background: #666; /* the draggable thumb */
+			}
+
+			/* Optional hover effect for the thumb */
+			::-webkit-scrollbar-thumb:hover {
+				background: #999;
+			}
+
+			/* For Firefox */
+			* {
+				scrollbar-color: #666 black; /* thumb | track */
+			}
+
+			@media (max-aspect-ratio: 6/7) {
+				#divContainerEconTech {
+					flex-direction: column;
+				}
+
+				#divProd {
+					width: 100%;
+				}
+
+				#txtLog {
+					height: 6em;
+				}
+			}
+		</style>
+	</head>
+
+	<body class="theme-dark theme-blue">
+		<div id="divContainerGame">
+			<div id="divContainerTables">
+				<div id="divContainerEconTech">
+					<div id="divProd">
+						<!-- ----------------- NO FACILITIES ----------------- -->
+						<!-- ----------------- NO FACILITIES ----------------- -->
+						<!-- ----------------- NO FACILITIES ----------------- -->
+
+						<table
+							id="tblProdNoFacilities"
+							class="table tblProd hidden"
+						>
+							<thead>
+								<th class="fixedW1 txtRight">Economic Phase</th>
+							</thead>
+							<tbody>
+								<tr class="topBorder">
+									<td class="fixedW1 txtRight">
+										CP carry over
+										<span class="txtSmall">(30 max)</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Colony CPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Mineral/Resource Card CPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ MS Pipeline CPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Total CP</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Maintenance
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Turn order bid
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtLeft">Subtotal</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Technology Spending<br />
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Ship Spending<br />
+										<span class="txtSmall"
+											>* Draw 2 Crew Cards and keep 1<br />
+											1 free troop per 3 unblockaded
+											Colonies
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Remaining CP</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										CP spent on upgrades
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										New Maintenance
+									</td>
+								</tr>
+								<tr class="topBorder lowRow">
+									<td class="fixedW1">&nbsp;</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- ----------------- FACILITIES ----------------- -->
+						<!-- ----------------- FACILITIES ----------------- -->
+						<!-- ----------------- FACILITIES ----------------- -->
+						<table
+							id="tblProdFacilities"
+							class="table tblProd hidden"
+						>
+							<thead>
+								<th class="fixedW1 txtRight">Economic Phase</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="fixedW1 txtRight">
+										LP carry over
+										<span class="txtSmall"
+											>(unlimited)</span
+										>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Colony/Facility LPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Maintenance
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Turn oder bid
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- LPs placed on LC colonies
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Remaining LP</td>
+								</tr>
+
+								<tr class="topBorder">
+									<td class="fixedW1 txtRight">
+										CP carry over
+										<span class="txtSmall">(30 max)</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Colony/Facility CPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Mineral/Resource Card CPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ MS Pipeline CPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Total CP</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Penalty LPs
+										<span class="txtSmall">(x3)</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtLeft">Subtotal</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Purchases<br />
+										<span class="txtSmall"
+											>* Draw 2 Crew Cards and keep 1<br />
+											1 free troop per 3 unblockaded
+											Colonies
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Remaining CP</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										CP spent on upgrades
+									</td>
+								</tr>
+								<tr class="topBorder">
+									<td class="fixedW1 txtRight">
+										RP carry over
+										<span class="txtSmall">(30 max)</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Colony/Facility RPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- Technology spending
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Remaining RP</td>
+								</tr>
+
+								<tr class="topBorder">
+									<td class="fixedW1 txtRight">
+										TP carry over
+										<span class="txtSmall"
+											>(unlimited)</span
+										>
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										+ Colony/Facility TPs
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										- TP spending
+									</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 hilite">Remaining TP</td>
+								</tr>
+								<tr>
+									<td class="fixedW1 txtRight">
+										New Maintenance
+									</td>
+								</tr>
+								<tr class="topBorder lowRow">
+									<td class="fixedW1">&nbsp;</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div id="divTech">
+						<table id="tblTech" class="table tblTech">
+							<thead>
+								<th class="techLabel txtCenter fixedW2">
+									Tech
+								</th>
+								<th class="noBorderRight" colspan="7"></th>
+							</thead>
+							<tbody id="tblTechBody"></tbody>
+						</table>
+						<div id="divLog">
+							<textarea id="txtLog" placeholder="Game Log ...">
+							</textarea>
+						</div>
+					</div>
+				</div>
+				<div id="divDM">
+					<table class="tblDM">
+						<thead>
+							<th></th>
+							<th>Phase</th>
+							<th>Attack #</th>
+							<th>Attack</th>
+							<th>Defense</th>
+							<th>Tactics</th>
+							<th>Hull</th>
+							<th>Weakness</th>
+						</thead>
+						<tr>
+							<td>DM #1</td>
+							<td id="tdDM1phase">?</td>
+							<td id="tdDM1attNo">?</td>
+							<td id="tdDM1att">?</td>
+							<td id="tdDM1def">?</td>
+							<td>2</td>
+							<td id="tdDM1hull">
+								<button
+									class="btnDMhull"
+									onclick="fnAddRemoveDMHull(1, -1)"
+								>
+									-</button
+								>&emsp;<span id="spDM1hull">?</span
+								>&emsp;<button
+									class="btnDMhull"
+									onclick="fnAddRemoveDMHull(1, 1)"
+								>
+									+
+								</button>
+							</td>
+							<td
+								id="tdDM1weak"
+								class="pointer"
+								onclick="fnUncoverDMWeakness(1)"
+							>
+								uncover
+							</td>
+						</tr>
+						<tr>
+							<td>DM #2</td>
+							<td id="tdDM2phase">?</td>
+							<td id="tdDM2attNo">?</td>
+							<td id="tdDM2att">?</td>
+							<td id="tdDM2def">?</td>
+							<td>2</td>
+							<td id="tdDM2hull">
+								<button
+									class="btnDMhull"
+									onclick="fnAddRemoveDMHull(2, -1)"
+								>
+									-</button
+								>&emsp;<span id="spDM2hull">?</span
+								>&emsp;<button
+									class="btnDMhull"
+									onclick="fnAddRemoveDMHull(2, 1)"
+								>
+									+
+								</button>
+							</td>
+							<td
+								id="tdDM2weak"
+								class="pointer"
+								onclick="fnUncoverDMWeakness(2)"
+							>
+								uncover
+							</td>
+						</tr>
+						<tr>
+							<td>DM #3</td>
+							<td id="tdDM3phase">?</td>
+							<td id="tdDM3attNo">?</td>
+							<td id="tdDM3att">?</td>
+							<td id="tdDM3def">?</td>
+							<td>2</td>
+							<td id="tdDM3hull">
+								<button
+									class="btnDMhull"
+									onclick="fnAddRemoveDMHull(3, -1)"
+								>
+									-</button
+								>&emsp;<span id="spDM3hull">?</span
+								>&emsp;<button
+									class="btnDMhull"
+									onclick="fnAddRemoveDMHull(3, 1)"
+								>
+									+
+								</button>
+							</td>
+							<td
+								id="tdDM3weak"
+								class="pointer"
+								onclick="fnUncoverDMWeakness(3)"
+							>
+								uncover
+							</td>
+						</tr>
+						<tbody></tbody>
+					</table>
+				</div>
+				<div id="divShip">
+					<table id="tblShip" class="table tblShip">
+						<thead>
+							<th>Group</th>
+							<th>Size</th>
+							<th>Notes</th>
+							<th>OoS</th>
+							<th>Attack</th>
+							<th>Defense</th>
+							<th>Tactics</th>
+							<th>Move</th>
+							<th>Other</th>
+							<th>Experience</th>
+						</thead>
+						<tbody id="tblShipBody"></tbody>
+					</table>
+				</div>
+			</div>
+
+			<div id="divContainerBottomRow">
+				<span
+					id="spRemCP"
+					title="Remaining CP"
+					onclick="divProd.scrollIntoView({behavior: 'smooth',block: 'start',});"
+					class="pointer"
+				></span
+				>&emsp;
+				<button title="Shortcut: Shift-N" onclick="fnNewPhase()">
+					New Econ Phase
+				</button>
+				&emsp;
+				<label
+					id="lblAutoPurchase"
+					class="txtCenter"
+					title="When clicking on a tech progression or when adding units to a group, the cost is automatically added to the active phase column of the economic table. Shortcut: Shift-P"
+				>
+					<input
+						id="chkAutoPurchase"
+						type="checkbox"
+						onclick="fnCheckboxes()"
+					/>
+					Purchase Mode
+				</label>
+				&emsp;
+				<label class="txtCenter" title="Shortcut: Shift-S"
+					><input
+						id="chkShowAllShips"
+						type="checkbox"
+						onclick="fnShipShowAllToggle()"
+						checked
+					/>
+					Show All Groups</label
+				>
+				&emsp;
+				<button title="Shortcut: D" onclick="fnDice('all')">
+					Dice
+				</button>
+				&emsp;
+				<button title="Shortcut: N" onclick="fnShowNotes()">
+					Notes
+				</button>
+				&emsp;
+				<button title="Shortcut: H" onclick="fnShowHelp()">
+					Help / Settings
+				</button>
+			</div>
+		</div>
+
+		<!-- MENUS -->
+		<!-- MENUS -->
+		<!-- MENUS -->
+
+		<div id="divNotes" class="draggable">
+			<div class="handle">&nbsp;</div>
+			<div
+				onclick="fnHideNotes()"
+				style="
+					float: right;
+					cursor: pointer;
+					text-align: center;
+					width: 2ch;
+					background-color: #ffffff44;
+				"
+			>
+				<u>X</u>
+			</div>
+			<br />
+			<br />
+			<textarea
+				id="txtNotes"
+				placeholder="Enter notes here ..."
+				onchange="fnSave()"
+			>
+			</textarea>
+		</div>
+
+		<div id="divNewGame">
+			<b>Space Empires 4X Accountant</b><br />
+			<div id="spNewGameInfo" class="txtSmall"></div>
+			<br />
+			<span style="color: red">
+				This is an early, unfinished version of my app! Your feedback is
+				highly appreciated in my
+				<a
+					href="https://boardgamegeek.com/thread/3604665/"
+					style="color: lightcoral"
+					target="_blank"
+					>BGG Forum Thread</a
+				>. </span
+			><br />
+			<hr />
+			<b>New Game</b><br />
+			<!-- Game Name: TODO<br /> -->
+			Player Color:
+			<select
+				name="selPlayerColor"
+				id="selPlayerColor"
+				onchange="fnSetTheme(this.value)"
+			>
+				<option value="red">Red</option>
+				<option value="green">Green</option>
+				<option value="blue">Blue</option>
+				<option value="yellow">Yellow</option></select
+			><br /><br />
+			Rules:<br />
+			<label
+				><input
+					id="chkRulesInstantUpgrade"
+					type="checkbox"
+					onclick="fnCheckboxes()"
+					unchecked
+				/>Instant Technology Upgrade
+				<span class="txtSmall">(MRB 30.0, p.29)</span></label
+			><br />
+			<label
+				><input
+					id="chkRulesFacilities"
+					type="checkbox"
+					onclick="fnCheckboxes()"
+					unchecked
+				/>Facilities
+				<span class="txtSmall">(MRB 36.0, p.31)</span></label
+			><br /><br />
+
+			Scenarios:<br />
+			<label
+				><input id="chkScenarioDM" type="checkbox" unchecked />1-Player
+				Doomsday Machine
+			</label>
+			<select name="selScenarioDMSize" id="selScenarioDMSize">
+				<option value="Small">Small</option>
+				<option value="Large">Large</option>
+			</select>
+			<select name="selScenarioDMDiff" id="selScenarioDMDiff">
+				<option value="Easy">Easy</option>
+				<option value="Normal">Normal</option>
+				<option value="Hard">Hard</option>
+				<option value="Harder">Harder</option>
+				<option value="Good Luck!">Good Luck!</option></select
+			><br />
+
+			<br />
+			<div style="text-align: center">
+				<button onclick="fnNewGame()">Start Game</button>
+			</div>
+			<br />
+		</div>
+		<div id="divNewGameBG"></div>
+
+		<div id="divHelp">
+			<b>HELP / SETTINGS</b>
+			<div
+				onclick="fnHideHelp()"
+				style="float: right; cursor: pointer; text-align: right"
+			>
+				<u>X</u>
+			</div>
+			<br /><br />
+			<b>Space Empires 4X Accountant</b><br />
+			Version: <span id="spAppVersion"></span><br />
+			License: CC-BY-NC 4.0<br />
+			<a href="https://gamesbyfelix.com" target="_blank"
+				>gamesbyfelix.com</a
+			><br />
+			<span style="color: red">
+				<a
+					href="https://boardgamegeek.com/thread/3604665/"
+					style="color: lightcoral"
+					target="_blank"
+					>Click here to submit Feedback</a
+				></span
+			>
+			<br />
+			<br />
+			<hr />
+			<b>Settings:</b><br />
+			Theme:
+			<select
+				name="selTheme"
+				id="selTheme"
+				onchange="fnSetTheme(this.value)"
+			>
+				<option value="red">Red</option>
+				<option value="green">Green</option>
+				<option value="blue">Blue</option>
+				<option value="yellow">Yellow</option></select
+			><br /><br />
+			Game Data:
+			<button onclick="fnExportGame()">Export</button>&emsp;<button
+				onclick="document.getElementById('inJSONFile').click()"
+			>
+				Import</button
+			>&emsp;<button onclick="fnResetGame()">Delete & New Game</button
+			><br />
+			<input
+				type="file"
+				id="inJSONFile"
+				accept=".json"
+				style="display: none"
+			/>
+			<br />
+			<label class="txtCenter"
+				><input
+					id="chkSettingsCalcMaintenance"
+					type="checkbox"
+					onclick="fnCheckboxes()"
+					title="Calculate maintenance automatically from unit group sizes."
+					checked
+				/>
+				Calculate Maintenance</label
+			>
+			<br />
+			<label class="txtCenter"
+				><input
+					id="chkSettingsHideNumPad"
+					type="checkbox"
+					onclick="fnCheckboxes()"
+					title="Hide the little number pad window that appears when selecting an econ table cell."
+					unchecked
+				/>
+				Hide Numpad Pop-Up</label
+			>
+			<br />
+			<hr />
+			<b>Keyboard Shortcuts:</b><br />
+			<table class="tblKBShortcuts">
+				<tr>
+					<td>E</td>
+					<td>Scroll to Economics table.</td>
+				</tr>
+				<tr>
+					<td>Shift-N</td>
+					<td>New Phase.</td>
+				</tr>
+				<tr>
+					<td>F</td>
+					<td>Focus first text field of current phase.</td>
+				</tr>
+				<tr>
+					<td>Arrows&ensp;</td>
+					<td>Text field value +/-1 or +/-5.</td>
+				</tr>
+				<tr>
+					<td>M. Wheel&ensp;</td>
+					<td>Text field value +/-1. Hold Shift for +/-5.</td>
+				</tr>
+				<tr>
+					<td>Esc</td>
+					<td>Unfocus text field or close windows.</td>
+				</tr>
+				<tr>
+					<td>Tab</td>
+					<td>Focus next text field.</td>
+				</tr>
+				<tr>
+					<td>T</td>
+					<td>Scroll to Tech table.</td>
+				</tr>
+				<tr>
+					<td>S</td>
+					<td>Scroll to Ship Tech table.</td>
+				</tr>
+				<tr>
+					<td>Shift-P</td>
+					<td>Toggle "Auto-Purchase".</td>
+				</tr>
+				<tr>
+					<td>Shift-S</td>
+					<td>Toggle "Show All Groups".</td>
+				</tr>
+				<tr>
+					<td>D</td>
+					<td>Roll dice.</td>
+				</tr>
+				<tr>
+					<td>N</td>
+					<td>Show notes.</td>
+				</tr>
+				<tr>
+					<td>H</td>
+					<td>Toggle Help/Settings window.</td>
+				</tr>
+				<tr>
+					<td>Ctrl-E&emsp;</td>
+					<td>Export game data.</td>
+				</tr>
+				<tr>
+					<td>Ctrl-I&emsp;</td>
+					<td>Import game data.</td>
+				</tr>
+				<tr>
+					<td>Ctrl-P&emsp;</td>
+					<td>Reset game data (purge).</td>
+				</tr>
+			</table>
+			<br />
+			<hr />
+			<b>Tips, Tricks & More:</b><br />
+			- Only enter numbers in the text fields, not plus/minus signs.<br />
+			- You can drag the Info and Dice windows around at the top.<br />
+			- Learn the keyboard shortcuts above.<br />
+			- Backup your game data with the export button above.<br />
+			<br />
+			- Use the browser zoom to change the text size (Ctrl+/-).<br />
+			- Set your browser to fullscreen mode for a better experience
+			(F11).<br />
+			- Save this HTML file for offline use (Ctrl-S).<br />
+			<br />
+			- This web app does not transmit any data.<br />
+			- All data is stored in the local browser cache.<br />
+			<br />
+		</div>
+		<div id="divHelpBG" onclick="fnHideHelp()"></div>
+
+		<div id="divDice" class="draggable">
+			<div class="handle">&nbsp;</div>
+			<div
+				onclick="fnHideDice()"
+				style="
+					float: right;
+					cursor: pointer;
+					text-align: center;
+					width: 2ch;
+					background-color: #ffffff44;
+				"
+			>
+				<u>X</u>
+			</div>
+			<b>Checks:</b><br />
+			<table class="tblDice">
+				<tr>
+					<td class="txtLeft tdDiceChecks">Black Hole:&emsp;</td>
+					<td
+						id="tdDiceBH"
+						class="txtLeft tdDiceChecks pointer"
+						onclick="fnDice('tdDiceBH')"
+					></td>
+				</tr>
+				<tr>
+					<td class="txtLeft tdDiceChecks">Slingshot:&emsp;</td>
+					<td
+						id="tdDiceBHSS"
+						class="txtLeft tdDiceChecks pointer"
+						onclick="fnDice('tdDiceBHSS')"
+					></td>
+				</tr>
+				<tr>
+					<td class="txtLeft tdDiceChecks">Wreck:&emsp;</td>
+					<td
+						id="tdDiceWreck"
+						class="txtLeft tdDiceChecks pointer"
+						onclick="fnDice('tdDiceWreck')"
+					></td>
+				</tr>
+			</table>
+			<br />
+			<b>D10:</b><br />
+			<table class="tblDice">
+				<tr>
+					<td
+						id="tdDiceD10-1"
+						class="txtCenter tdDice bgTheme"
+						onclick="fnDice('1')"
+					></td>
+					<td
+						id="tdDiceD10-2"
+						class="txtCenter tdDice bgTheme"
+						onclick="fnDice('2')"
+					></td>
+					<td
+						id="tdDiceD10-3"
+						class="txtCenter tdDice bgTheme"
+						onclick="fnDice('3')"
+					></td>
+					<td
+						id="tdDiceD10-4"
+						class="txtCenter tdDice bgTheme"
+						onclick="fnDice('4')"
+					></td>
+					<td
+						id="tdDiceD10-5"
+						class="txtCenter tdDice bgTheme"
+						onclick="fnDice('5')"
+					></td>
+					<td
+						id="tdDiceD10-6"
+						class="txtCenter tdDice bgTheme"
+						onclick="fnDice('6')"
+					></td>
+				</tr>
+				<tr>
+					<td
+						id="tdDiceD10-7"
+						class="txtCenter bgInv tdDice"
+						onclick="fnDice('7')"
+					></td>
+					<td
+						id="tdDiceD10-8"
+						class="txtCenter bgInv tdDice"
+						onclick="fnDice('8')"
+					></td>
+					<td
+						id="tdDiceD10-9"
+						class="txtCenter bgInv tdDice"
+						onclick="fnDice('9')"
+					></td>
+					<td
+						id="tdDiceD10-10"
+						class="txtCenter bgInv tdDice"
+						onclick="fnDice('10')"
+					></td>
+					<td
+						id="tdDiceD10-11"
+						class="txtCenter bgInv tdDice"
+						onclick="fnDice('11')"
+					></td>
+					<td
+						id="tdDiceD10-12"
+						class="txtCenter bgInv tdDice"
+						onclick="fnDice('12')"
+					></td>
+				</tr>
+			</table>
+			<br />
+			<div style="text-align: center">
+				<button onclick="fnDice('all')">Re-Roll All</button><br />
+				<span class="txtSmall"
+					>... or click a value to re-roll it.</span
+				>
+			</div>
+		</div>
+		<div id="divInfo" class="draggable">
+			<div class="handle"><b>&nbsp;</b></div>
+			<div
+				onclick="fnHideInfo()"
+				style="
+					float: right;
+					cursor: pointer;
+					text-align: center;
+					width: 2ch;
+					background-color: #ffffff44;
+				"
+			>
+				<u>X</u>
+			</div>
+			<div id="divInfoContent"></div>
+		</div>
+
+		<div id="divNumPad" class="txtCenter">
+			<button onclick="fnNumPad(1)" id="divNumPadBtn1" class="btnNumPad">
+				1
+			</button>
+			<button onclick="fnNumPad(2)" id="divNumPadBtn2" class="btnNumPad">
+				2
+			</button>
+			<button onclick="fnNumPad(3)" id="divNumPadBtn3" class="btnNumPad">
+				3
+			</button>
+			<br />
+			<button onclick="fnNumPad(4)" id="divNumPadBtn4" class="btnNumPad">
+				4
+			</button>
+			<button onclick="fnNumPad(5)" id="divNumPadBtn5" class="btnNumPad">
+				5
+			</button>
+			<button onclick="fnNumPad(6)" id="divNumPadBtn6" class="btnNumPad">
+				6
+			</button>
+			<br />
+			<button onclick="fnNumPad(7)" id="divNumPadBtn7" class="btnNumPad">
+				7
+			</button>
+			<button onclick="fnNumPad(8)" id="divNumPadBtn8" class="btnNumPad">
+				8
+			</button>
+			<button onclick="fnNumPad(9)" id="divNumPadBtn9" class="btnNumPad">
+				9
+			</button>
+			<br />
+			<button
+				onclick="fnNumPad('backspace')"
+				id="divNumPadBtnC"
+				class="btnNumPad btnDark"
+			>
+				X
+			</button>
+			<button onclick="fnNumPad(0)" id="divNumPadBtn0" class="btnNumPad">
+				0
+			</button>
+			<button
+				onclick="fnNumPad('enter')"
+				id="divNumPadBtnE"
+				class="btnNumPad btnDark"
+			>
+				&#8629;
+			</button>
+		</div>
+
+		<script>
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			const appVersion = "v0.19";
+			const appDate = "2025-11-08";
+			const licenseInfo =
+				"CC-BY-NC 4.0<br /><a href='https://gamesbyfelix.com' target='_blank'>gamesbyfelix.com</a>";
+			const spAppVersion = document.getElementById("spAppVersion");
+			const spNewGameInfo = document.getElementById("spNewGameInfo");
+			const divContainerGame =
+				document.getElementById("divContainerGame");
+			const spRemCP = document.getElementById("spRemCP");
+			const divNewGame = document.getElementById("divNewGame");
+			const divNewGameBG = document.getElementById("divNewGameBG");
+
+			const divProd = document.getElementById("divProd");
+			const tblProdNoFacilities = document.getElementById(
+				"tblProdNoFacilities"
+			);
+			const tblProdFacilities =
+				document.getElementById("tblProdFacilities");
+			let tblProdsheet; // this is where the facilities / no facilities table will be stored in.
+			const divTech = document.getElementById("divTech");
+			const tblTechBody = document.getElementById("tblTechBody");
+			const lblAutoPurchase = document.getElementById("lblAutoPurchase");
+			const chkAutoPurchase = document.getElementById("chkAutoPurchase");
+			const chkShowAllShips = document.getElementById("chkShowAllShips");
+			const divShip = document.getElementById("divShip");
+			const tblShip = document.getElementById("tblShip");
+			const tblShipBody = document.getElementById("tblShipBody");
+			const chkRulesFacilities =
+				document.getElementById("chkRulesFacilities");
+			const chkRulesInstantUpgrade = document.getElementById(
+				"chkRulesInstantUpgrade"
+			);
+			const txtLog = document.getElementById("txtLog");
+			const divNotes = document.getElementById("divNotes");
+			const txtNotes = document.getElementById("txtNotes");
+			const divInfoContent = document.getElementById("divInfoContent");
+			const divInfo = document.getElementById("divInfo");
+			let isDragging = false,
+				offsetX,
+				offsetY;
+			const divHelp = document.getElementById("divHelp");
+			const divHelpBG = document.getElementById("divHelpBG");
+
+			const divNumPad = document.getElementById("divNumPad");
+			let numPadEvent;
+			let numPadSelStart;
+			let numPadSelEnd;
+
+			const divDice = document.getElementById("divDice");
+			const tdDiceBH = document.getElementById("tdDiceBH");
+			const tdDiceBHSS = document.getElementById("tdDiceBHSS");
+			const tdDiceWreck = document.getElementById("tdDiceWreck");
+			const tdDiceD10 = {
+				1: document.getElementById("tdDiceD10-1"),
+				2: document.getElementById("tdDiceD10-2"),
+				3: document.getElementById("tdDiceD10-3"),
+				4: document.getElementById("tdDiceD10-4"),
+				5: document.getElementById("tdDiceD10-5"),
+				6: document.getElementById("tdDiceD10-6"),
+				7: document.getElementById("tdDiceD10-7"),
+				8: document.getElementById("tdDiceD10-8"),
+				9: document.getElementById("tdDiceD10-9"),
+				10: document.getElementById("tdDiceD10-10"),
+				11: document.getElementById("tdDiceD10-11"),
+				12: document.getElementById("tdDiceD10-12"),
+			};
+
+			let txtUNCost;
+			let txtUNInfos;
+			let shipPlusButtons;
+
+			let theme;
+			let prodPhaseLabels;
+			let prodCells;
+			let shipChks;
+
+			let loading = true;
+			let phases = 0;
+			let tabindex = 0;
+			let selectedColumn = 1;
+			let autoPurchase = false;
+			let rulesFacilities = false;
+			let rulesInstantUpgrade = false;
+
+			let settingsCalcMaintenance = true;
+			const chkSettingsCalcMaintenance = document.getElementById(
+				"chkSettingsCalcMaintenance"
+			);
+			let settingsHideNumPad = false;
+			const chkSettingsHideNumPad = document.getElementById(
+				"chkSettingsHideNumPad"
+			);
+
+			let showAllShips = true;
+			let gameData = {}; // game data for saving, loading, exporting, importing
+			let pd = {}; // production table field data
+			let shipList = {
+				// general ship database
+				Flag: {
+					name: "Flagship", // TODO
+					cp: 0,
+					att: "*",
+					def: "*",
+					hull: 3,
+					maint: 0,
+					info: "todo",
+				},
+				UN: {
+					name: "Unique Ship",
+					cp: 0,
+					att: "*",
+					def: "*",
+					hull: "*",
+					maint: 0,
+					info: "• Sp.A = Special Ability (the ones you chose during the ship's design process).<br />• See Unique Ships in MRB 41.0, page 43.",
+					userstats: "",
+				},
+				SC: {
+					name: "Scout",
+					cp: 6,
+					att: "E3 (A6-8)",
+					def: 0,
+					hull: 1,
+					maint: 1,
+					info: "• Increased firepower <i><b>vs fighters</b></i> with PD - A6 at PD1, A7 at PD2, A8 at PD3.<br />• With AC3, SCX7 gets Move Tech +3. ",
+				},
+				DD: {
+					name: "Destroyer",
+					cp: 9,
+					att: "D4",
+					def: 0,
+					hull: 1,
+					maint: 1,
+					info: "• Must have Ship Size Technology of 2 or more to build.<br />• Can detect cloaked ships (raiders) depending on level of scanning technology.<br />• DDX has Heavy Warheads and may be equipped with Attack 2. Defense 2 & Fast 2.",
+				},
+				CA: {
+					name: "Cruiser",
+					cp: 12,
+					att: "C4",
+					def: 1,
+					hull: 2,
+					maint: 2,
+					info: "• Must have Ship Size Technology of 3 or more to build.<br />• Can be equipped with Exploration Technology and Jammer Tech.",
+				},
+				BC: {
+					name: "Battlecruiser",
+					cp: 15,
+					att: "B5",
+					def: 1,
+					hull: 2,
+					maint: 2,
+					info: "• Need Ship Size Tech of 4 or more to build.<br />• Can mount Fast 1. ",
+				},
+				BB: {
+					name: "Battleship",
+					cp: 20,
+					att: "A5",
+					def: 2,
+					hull: 3,
+					maint: 3,
+					info: "• Need Ship Size Tech of 5 or more to build.<br />• Can mount Tractor Beam with AC1.",
+				},
+				DN: {
+					name: "Dreadnaught",
+					cp: 24,
+					att: "A6",
+					def: 3,
+					hull: 3,
+					maint: 3,
+					info: "• Need Ship Size Tech of 6 or more to build.<br />• Can mount Shield Projector with AC1. ",
+				},
+				TN: {
+					name: "Titan",
+					cp: 32,
+					att: "A7",
+					def: 3,
+					hull: 5,
+					maint: 5,
+					info: "• Must have Ship Size Tech. of 7 to build.<br />• Only Fighters get fleet size bonus vs Titan.<br />Each hit from a Titan does 2 damage.<br />• If the player also has fighter tech, a Titan may carry 3 Fighters.<br />Unless the attacking ship is a fighter, a roll of 1 is <i><b>not</b></i> an automatic hit.<br />• Titans may never retreat from combat.<br />Fighters get a +1 attack str. against a Titan.<br />• Can mount Attack 4 with AC1.",
+				},
+				Base: {
+					name: "Base",
+					cp: 12,
+					att: "A7",
+					def: 2,
+					hull: 3,
+					maint: 0,
+					info: "• Only one Base can be in any system.<br />• Can mount Exploration 2.<br />• Bases pay no maintenance.<br />• Bases are automatically upgraded for free.<br />• Colony may only have one Base/Starbase and one Defense Satellite and may only build one per turn.<br />• Cannot move.<br />• Advanced Bases can mount Scanners.<br />• Advanced Bases can be built if connected to colony by MS Pipeline.<br />",
+				},
+				Starbase: {
+					name: "Starbase",
+					cp: "12",
+					att: "A7",
+					def: 3,
+					hull: 4,
+					maint: 0,
+					info: "• Only one Base can be in any system.<br />• Can mount Exploration 2.<br />• Bases pay no maintenance.<br />• Bases are automatically upgraded for free.<br />• Colony may only have one Base/Starbase and one Defense Satellite and may only build one per turn.<br />• Starbases are built from Bases at full colonies.<br />• Starbases get 2 separate attacks.<br />• Starbases count as 1 SY.",
+				},
+				"Defense Sat": {
+					name: "Defense Sat",
+					cp: 6,
+					att: "B4",
+					def: 1,
+					hull: 2,
+					maint: 0,
+					info: "• Colony may only have one Base/Starbase and one Defense Satellite and may only build one per turn.<br />",
+				},
+				CO: {
+					name: "Colony Ship",
+					cp: 8,
+					att: 0,
+					def: 0,
+					hull: 1,
+					maint: 0,
+					info: "• Colonize planets. (Terraform 1 for Barren)<br />• Always has a movement tech of 1.<br />• Can not retreat.<br />• Is destroyed instantly during movement if there are enemy combat ships present andthere are no friendly combat ships. ",
+				},
+				Colony: {
+					name: "Colony",
+					cp: "*",
+					att: 0,
+					def: 0,
+					hull: 0,
+					maint: 0,
+					info: "• Defends at strength of 0 and can not fire.<br />• Only one round of fire is vs a colony. ",
+				},
+				Facility: {
+					name: "Facility",
+					cp: 5,
+					att: 0,
+					def: 0,
+					hull: 0,
+					maint: 0,
+					info: "• IC, RC, LC, TC — one per colony. Can only be scrapped at start of income phase.",
+				},
+				Decoy: {
+					name: "Decoy",
+					cp: 1,
+					att: "*",
+					def: "*",
+					hull: 0,
+					maint: 0,
+					info: "• Automatically removed in combat.<br />• Purchased during the economic phase at a friendly colony.<br />• Upgrades Move Tech automatically.",
+				},
+				MS: {
+					name: "MS Pipeline",
+					cp: 3,
+					att: 0,
+					def: 0,
+					hull: 1,
+					maint: 0,
+					info: "• Always has a movement tech of 1.<br />• Is destroyed during movement by enemy combat ship if no friendly combat ship.<br />• Can give a CP bonus from trade and a movement bonus to ships.<br />• Cannot retreat.",
+				},
+				Miner: {
+					name: "Mining Ship",
+					cp: 5,
+					att: 0,
+					def: 0,
+					hull: 1,
+					maint: 0,
+					info: "• Can pick up minerals and Space Wrecks.<br />• Is destroyed during movement by enemy combat ship if no friendly combat ship.<br />• Always has a movement tech of 1.<br />• With AC2 may build MinerX #5-8.<br />• MinerX auto upgrade Move & Terra Tech.<br />• Cannot retreat.",
+				},
+				SY: {
+					name: "Ship Yard",
+					cp: 6,
+					att: "C3",
+					def: 0,
+					hull: 1,
+					maint: 0,
+					info: "• A producing colony can build 1 SY/turn.<br />• Can mount Exploration 2.<br />• SYs are automatically upgraded to the highest technology for free (obviously limited by hull size).",
+				},
+				T: {
+					name: "Transport",
+					cp: 6,
+					att: "E1",
+					def: "1/2",
+					hull: 1,
+					maint: 1,
+					info: "• May carry up to 6 ground units.<br />• Transports may not explore.<br />• Can mount Anti-Replicator Tech.<br />• Defense Strength increases to 2 when Ground Combat 3 is researched.",
+				},
+				Mil: {
+					name: "Militia",
+					cp: "*",
+					att: "E5",
+					def: 0,
+					hull: 1,
+					maint: 0,
+					info: "• Ground troops may only be on a colony or on a Transport.<br />• Militia may not be purchased, but are temporarily awarded if a colony is attacked by troop,<br />• A Transport that survives until the end of the second round of combat may land troops.<br />• Ground units pay no maintenance.<br />• Colonies get a Defense of 1 if 1-3 ground units present & Defense of 2 if 4 or more present<br />• *Gray Armor have a special ability and may support other units in addition to their attack.<br />• *Cyber Armor counts as 3 Gray Armor for purpose of support.",
+				},
+				Inf: {
+					name: "Infantry",
+					cp: 2,
+					att: "D5",
+					def: 1,
+					hull: 1,
+					maint: 0,
+					info: "• Ground troops may only be on a colony or on a Transport.<br />• Militia may not be purchased, but are temporarily awarded if a colony is attacked by troop,<br />• A Transport that survives until the end of the second round of combat may land troops.<br />• Ground units pay no maintenance.<br />• Colonies get a Defense of 1 if 1-3 ground units present & Defense of 2 if 4 or more present<br />• *Gray Armor have a special ability and may support other units in addition to their attack.<br />• *Cyber Armor counts as 3 Gray Armor for purpose of support.",
+				},
+				Mar: {
+					name: "Space Marines",
+					cp: 3,
+					att: "C6/D5 (att/def)",
+					def: 1,
+					hull: 2,
+					maint: 0,
+					info: "• Ground troops may only be on a colony or on a Transport.<br />• Militia may not be purchased, but are temporarily awarded if a colony is attacked by troop,<br />• A Transport that survives until the end of the second round of combat may land troops.<br />• Ground units pay no maintenance.<br />• Colonies get a Defense of 1 if 1-3 ground units present & Defense of 2 if 4 or more present<br />• *Gray Armor have a special ability and may support other units in addition to their attack.<br />• *Cyber Armor counts as 3 Gray Armor for purpose of support.",
+				},
+				HI: {
+					name: "Heavy Infantry",
+					cp: 3,
+					att: "D4/C6",
+					def: 2,
+					hull: 2,
+					maint: 0,
+					info: "• Ground troops may only be on a colony or on a Transport.<br />• Militia may not be purchased, but are temporarily awarded if a colony is attacked by troop,<br />• A Transport that survives until the end of the second round of combat may land troops.<br />• Ground units pay no maintenance.<br />• Colonies get a Defense of 1 if 1-3 ground units present & Defense of 2 if 4 or more present<br />• *Gray Armor have a special ability and may support other units in addition to their attack.<br />• *Cyber Armor counts as 3 Gray Armor for purpose of support.",
+				},
+				Grav: {
+					name: "Grav Armor",
+					cp: 4,
+					att: "C6*",
+					def: 2,
+					hull: 2,
+					maint: 0,
+					info: "• Ground troops may only be on a colony or on a Transport.<br />• Militia may not be purchased, but are temporarily awarded if a colony is attacked by troop,<br />• A Transport that survives until the end of the second round of combat may land troops.<br />• Ground units pay no maintenance.<br />• Colonies get a Defense of 1 if 1-3 ground units present & Defense of 2 if 4 or more present<br />• *Gray Armor have a special ability and may support other units in addition to their attack.<br />• *Cyber Armor counts as 3 Gray Armor for purpose of support.",
+				},
+				Cyb: {
+					name: "Cyber Armor",
+					cp: 5,
+					att: "B8*",
+					def: 3,
+					hull: 3,
+					maint: 0,
+					info: "• Ground troops may only be on a colony or on a Transport.<br />• Militia may not be purchased, but are temporarily awarded if a colony is attacked by troop,<br />• A Transport that survives until the end of the second round of combat may land troops.<br />• Ground units pay no maintenance.<br />• Colonies get a Defense of 1 if 1-3 ground units present & Defense of 2 if 4 or more present<br />• *Gray Armor have a special ability and may support other units in addition to their attack.<br />• *Cyber Armor counts as 3 Gray Armor for purpose of support.",
+				},
+				BD: {
+					name: "Boarding Ship",
+					cp: 12,
+					att: "F5/6*",
+					def: 0,
+					hull: 2,
+					maint: 2,
+					info: "• Can only build when at boarding technology 1+.<br />• *Attack at F1 against targets that they cannot board (4.2) and no Attack Tech.<br />• Attack strength increase to F6 if at boarding technology level 2. ",
+				},
+				R: {
+					name: "Raider",
+					cp: 12,
+					att: "A/D4/5",
+					def: 0,
+					hull: 2,
+					maint: 2,
+					info: "• Can only build when at cloaking technology 1+.<br />• Attacks at D4 against fleets with a scanner ship, A4 without.<br />• Attack strength increases to A5/D5 if at cloaking technology level 2.<br />• +1 to attack rating 1st round of combat when attack fleets w/out appropriate scanner tech.<br />• Raiders get no benefits from their cloaking technology while in nebulae.<br />• RX may be equipped with Attack 3, Defense 3, Fast 2, carry I Ground unit, Drop Ships.",
+				},
+				CV: {
+					name: "Carrier",
+					cp: 12,
+					att: "E3",
+					def: 0,
+					hull: 1,
+					maint: 1,
+					info: "• Can carry up to 3 fighter squadrons.<br />• Must have fighter technology to build.<br />• CV may shoot, but cannot be targeted if any friendly fighters are present.",
+				},
+				BV: {
+					name: "Battle Carrier",
+					cp: 20,
+					att: "B5",
+					def: 1,
+					hull: 3,
+					maint: 3,
+					info: "• Must have AC2 and Fighter 1.<br />• Anti-sensor hull.<br />• Can carry up to 6 fighter squadrons.<br />• Can mount Fast 2.",
+				},
+				F1: {
+					name: "Fighters 1",
+					cp: 5,
+					att: "B5",
+					def: 0,
+					hull: 1,
+					maint: 1,
+					info: "• Must have Fighter 1 technology.",
+				},
+				F2: {
+					name: "Fighters 2",
+					cp: 5,
+					att: "B6",
+					def: "0 (1)*",
+					hull: 1,
+					maint: 1,
+					info: "• Must have Fighter 2 technology.<br />• * Defense = 1 if fired on by PD.",
+				},
+				F3: {
+					name: "Fighters 3",
+					cp: 5,
+					att: "B7",
+					def: "1 (2)*",
+					hull: 1,
+					maint: 1,
+					info: "• Must have Fighter 3 technology.<br />• * Defense = 2 if fired on by PD.",
+				},
+				F4: {
+					name: "Fighters 4",
+					cp: 5,
+					att: "B8",
+					def: 2,
+					hull: 1,
+					maint: 1,
+					info: "• Must have Fighter 4 technology.",
+				},
+				Mines: {
+					name: "Mines",
+					cp: 5,
+					att: "*",
+					def: "*",
+					hull: 1,
+					maint: 0,
+					info: "• After mines have been swept, each mine destroys one ship of the mine player's choice and is itself removed.<br />• Each mine only does one point of damage to a Titan.<br />• Always has a movement rate of 1.<br />• Can not enter a hex with enemy units.<br />• Never carries any additional technology.",
+				},
+				SW: {
+					name: "Mine Sweeper",
+					cp: 6,
+					att: "E1",
+					def: 0,
+					hull: 1,
+					maint: 1,
+					info: "• Must have Mine Sweeper Technology of 1.<br />• Ship removes some mines before combat.",
+				},
+			};
+
+			// tech progression data table
+			let tp = {
+				"Ship Size": {
+					prog: [
+						[
+							1,
+							0,
+							true,
+							"Can build SC, CO, SY, Miner, Decoy, MS Pipeline.",
+						],
+						[2, 10, false, "Can build DD, Base."],
+						[3, 15, false, "Can build CA."],
+						[4, 20, false, "Can build BC."],
+						[5, 20, false, "Can build BB."],
+						[6, 20, false, "Can build DN."],
+						[7, 30, false, "Can build TN."],
+					],
+				},
+				Attack: {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							20,
+							false,
+							"Add 1 to a ship's attack rating when in battle.",
+						],
+						[
+							2,
+							30,
+							false,
+							"Add 2 to a ship's attack rating when in battle (up to the ship's limit).",
+						],
+						[
+							3,
+							25,
+							false,
+							"Add 3 to a ship's attack rating when in battle (up to the ship's limit).",
+						],
+						[
+							4,
+							10,
+							false,
+							"Must have researched Advanced Construction 1. Add 4 to (only) a Titan's attack rating.",
+						],
+					],
+				},
+				Defense: {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							20,
+							false,
+							"Add 1 to a ship's defense rating when in battle.",
+						],
+						[
+							2,
+							30,
+							false,
+							"Add 2 to a ship's defense rating when in battle (up to the ship's limit).",
+						],
+						[
+							3,
+							25,
+							false,
+							"Add 3 to a ship's defense rating when in battle (up to the ship's limit).",
+						],
+					],
+				},
+				Tactics: {
+					prog: [
+						[0, 0, true, ""],
+						[1, 15, false, "-"],
+						[2, 15, false, "-"],
+						[3, 15, false, "-"],
+					],
+					info: "When opposing ships both have the same fire rating (E, D, C, etc.), the side with the higher tactical rating fires first. If the tactical rating is also tied, then the defender fires first. This rating is not limited by the technology limit (hull size) of a ship!",
+				},
+				Move: {
+					prog: [
+						[1, 0, true, "Move: 1-1-1"],
+						[2, 20, false, "Move: 1-1-2"],
+						[3, 25, false, "Move: 1-2-2"],
+						[4, 25, false, "Move: 2-2-2"],
+						[5, 25, false, "Move: 2-2-3"],
+						[6, 20, false, "Move: 2-3-3"],
+						[7, 20, false, "Move: 3-3-3"],
+					],
+				},
+				Fighters: {
+					prog: [
+						[0, 0, true, ""],
+						[1, 25, false, "Can build CVs and fighter 1."],
+						[2, 20, false, "Can build and upgrade to fighter 2."],
+						[3, 25, false, "Can build and upgrade to fighter 3."],
+						[
+							4,
+							25,
+							false,
+							"Can build and upgrade to fighter 4. Advanced Construction 2 must be researched.",
+						],
+					],
+				},
+				"Point Defense": {
+					prog: [
+						[0, 0, true, ""],
+						[1, 20, false, "Scouts fire at fighters at A6."],
+						[2, 20, false, "Scouts fire at fighters at A7."],
+						[3, 20, false, "Scouts fire at fighters at A8."],
+					],
+				},
+				"Supply Range": {
+					prog: [
+						[1, 0, true, ""],
+						[2, 10, false, "-"],
+						[3, 15, false, "-"],
+						[4, 15, false, "-"],
+					],
+					info: "Only used when playing with Logistics Facilities. Players Start with a Supply Range of 1. Supply Range is the maximum distance a non-Scout/non-Raider combat ship can be from a friendly Colony and be in Supply. A lone ship armed with Exploration Tech in Deep Space has an unlimited Supply Range.",
+				},
+				"Ship Yard": {
+					prog: [
+						[1, 0, true, "Can build 1 hull point per SY."],
+						[
+							2,
+							20,
+							false,
+							"Can build 1.5 hull points per SY (rounded down).",
+						],
+						[3, 25, false, "Can build 2 hull points per SY."],
+					],
+				},
+				Ground: {
+					prog: [
+						[1, 0, true, "Can build Transports and Infantry."],
+						[
+							2,
+							10,
+							false,
+							"Can build Space Marines and Heavy Infantry.",
+						],
+						[
+							3,
+							15,
+							false,
+							"Can build Grav Armor. Transports are equipped with drop ships and their defense strength increase to 2.",
+						],
+					],
+				},
+				Terraforming: {
+					prog: [
+						[0, 0, true, "Can colonize non-barren planets."],
+						[1, 20, false, "Can colonize any unoccupied planet."],
+						[2, 25, false, "Can harvest resources from Nebulae."], // TODO - 1 2 3 4 on sheet
+					],
+				},
+				Cloaking: {
+					prog: [
+						[0, 0, true, ""],
+						[1, 30, false, "Can build raiders."],
+						[
+							2,
+							30,
+							false,
+							"Raiders increase in strength and become harder to detect.",
+						],
+					],
+				},
+				Scanners: {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							20,
+							false,
+							"Destroyers can detect Raiders with cloaking technology 1.",
+						],
+						[
+							2,
+							20,
+							false,
+							"Destroyers can detect Raiders with cloaking technology 2.",
+						],
+					],
+				},
+				Mines: {
+					prog: [
+						[0, 0, true, ""],
+						[1, 30, false, "Can build Mines."],
+					],
+				},
+				"Mine Sweeper": {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							10,
+							false,
+							"Can build Mine Sweepers. Each Mine Sweeper sweeps 1 mine before combat.",
+						],
+						[
+							2,
+							15,
+							false,
+							"Each Mine Sweeper sweeps 2 Mines before combat.",
+						],
+						[
+							3,
+							20,
+							false,
+							"Each Mine Sweeper sweeps 3 Mines before combat.",
+						],
+					],
+				},
+				"Advanced Construction": {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							10,
+							false,
+							"Can research Econ Turn after SS4+ ship is built. Enables DDX, Adv. Bases, & New Tech for BB, DN, Titan.",
+						],
+						[
+							2,
+							10,
+							false,
+							"May build BV, Fighter 4 and 4 MinerXs. Can build Cyber Armor if also have Ground Combat 3.",
+						],
+						[
+							3,
+							10,
+							false,
+							"May build RX, SCX#7, and upgrade their Flagship.",
+						],
+					],
+				},
+				"Anti-Replicator": {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							10,
+							false,
+							"Transports that are over a Replicator Colony at the Colony Start stage of growth, may eliminate that Colony.",
+						],
+					],
+				},
+				"Military Academy": {
+					prog: [
+						[0, 0, true, ""],
+						[1, 10, false, "Ships start as Skilled."],
+						[
+							2,
+							20,
+							false,
+							"Ships start as Skilled and one is subtracted from the die roll to gain an experience level.",
+						],
+					],
+				},
+				Boarding: {
+					prog: [
+						[0, 0, true, ""],
+						[1, 20, false, "Can build Boarding Ships."],
+						[2, 25, false, "Boarding Ships increase in strength."],
+					],
+				},
+				Security: {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							15,
+							false,
+							"All units are instantly equipped with Security Forces 1. When attacked by a Boarding Ship, 1 is added to the hull.",
+						],
+						[
+							2,
+							15,
+							false,
+							"All units are instantly equipped with Security Forces 2. When attacked by a Boarding Ship, 2 is added to the hull.",
+						],
+					],
+				},
+				Exploration: {
+					prog: [
+						[0, 0, true, "Exploration as normal."],
+						[
+							1,
+							15,
+							false,
+							"CAs may be equipped with special exploration technology which allows them to peek at or flip one adjacent System Marker before they move.",
+						],
+						[
+							2,
+							15,
+							false,
+							"CAs, Flagships, Bases, and SYs may enable a limited reaction move.",
+						],
+					],
+				},
+				"Missile Boats": {
+					// TODO ? not on AGT research chart
+					prog: [
+						[0, 0, true, ""],
+						[1, 20, false, "TODO ..."],
+						[2, 15, false, "TODO ..."],
+					],
+				},
+				"Jamming Tech": {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							15,
+							false,
+							"CAs may mount Jammer Technology If Jammer Tech is present, reduce the Attack Strength of Missiles by 2.",
+						],
+						[
+							2,
+							15,
+							false,
+							"In addition to reducing Attack Strength, if 2 CAs with Jammer 2 are present, Missiles have Attack Tech of 0,",
+						],
+					],
+				},
+				Fast: {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							10,
+							false,
+							"Battlecruisers and Decoys may move an extra hex on turn 1.",
+						],
+						[
+							2,
+							10,
+							false,
+							"DX, BV, RX may move an extra hex on turn 1.",
+						],
+					],
+				},
+				"Tractor Beam": {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							10,
+							false,
+							"Must have researched Advance Construction 1. This may only be installed on BBs.",
+						],
+					],
+				},
+				"Shield Projector": {
+					prog: [
+						[0, 0, true, ""],
+						[
+							1,
+							10,
+							false,
+							"Must have researched Advance Construction 1. This may only be installed on DNs. ",
+						],
+					],
+				},
+			};
+
+			// ship technologies database
+			const stDB = {
+				BASE: {
+					info: "Base",
+					amt: 4,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [["E: 2", false]], // TODO
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				BB: {
+					info: "BB",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						["R", false],
+						[6, false],
+						[7, false],
+					],
+					Other: [["TB: 1", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				BC: {
+					info: "BC",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						["R", false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [["Fast: 1", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				"BD/MB": {
+					info: "BD",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						["R", false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [["BD/MB: 2", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				BV: {
+					info: "BV",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						["R", false],
+						[6, false],
+						[7, false],
+					],
+					Other: [["Fast: 2", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				CA: {
+					info: "CA",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						["R", false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["E: 1", false],
+						[2, false],
+						["J: 1", false],
+						[2, false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				CO: {
+					info: "CO",
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [["T: 1", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				CV: {
+					info: "CV",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [[1, false]],
+					Defense: [[1, false]],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						["R", false],
+						[6, false],
+						[7, false],
+					],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				CYBER: {
+					info: "Cyb", // TODO
+					amt: 3,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				DD: {
+					info: "DD",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						["X: 2", false],
+					],
+					Defense: [
+						[1, false],
+						["X: 2", false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						["R", false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["S: 1", false],
+						[2, false],
+						["F: 2", false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				DECOY: {
+					info: "Decoy", // TODO
+					amt: 4,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				DN: {
+					info: "DN",
+					amt: 5,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						[5, false],
+						["R", false],
+						[7, false],
+					],
+					Other: [["SP: 1", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				DS: {
+					info: "Defense Sat", // TODO
+					amt: 4,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				F: {
+					info: "F",
+					amt: 10,
+					size: 0,
+					act: false,
+					Attack: [[1, false]],
+					Defense: [[1, false]],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [
+						["FTR: 2", false],
+						[3, false],
+						[4, false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				"FAC-IC": {
+					info: "Facility", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				"FAC-RC": {
+					info: "Facility", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				"FAC-LC": {
+					info: "Facility", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				"FAC-TC": {
+					info: "Facility", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				FLAG: {
+					info: "Flag",
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						["R", false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["E: 1", false],
+						[2, false],
+						["F: 1", false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				GRAV: {
+					info: "Grav", // TODO
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				HI: {
+					info: "HI", // TODO
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				INF: {
+					info: "Inf", // TODO
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				MAR: {
+					info: "Mar", // TODO
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				MINER: {
+					info: "Miner", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [["T: 2", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				"MINER-X": {
+					info: "Miner",
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [["T: 2", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				MINES: {
+					info: "Mines", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				"MS-P": {
+					info: "MS", // TODO
+					amt: 1,
+					size: 0,
+					act: false,
+					Attack: [],
+					Defense: [],
+					Tactics: [],
+					Move: [],
+					Other: [],
+					Experience: [],
+					oos: false,
+					notes: "",
+				},
+				R: {
+					info: "R",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						["X: 3", false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						["X: 3", false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						["R", false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["C: 2", false],
+						["F: 2", false],
+						["G: 3", false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				SB: {
+					info: "Starbase",
+					amt: 2,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+						[4, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [["E: 2", false]], // TODO
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				SC: {
+					info: "SC",
+					amt: 7, // special on number 7 -> 7X
+					size: 0,
+					act: false,
+					Attack: [[1, false]],
+					Defense: [[1, false]],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						["R", false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["PD: 1", false],
+						[2, false],
+						[3, false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				SW: {
+					info: "SW",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [[1, false]],
+					Defense: [[1, false]],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						[5, false],
+						["R", false],
+						[7, false],
+					],
+					Other: [
+						["SW: 2", false],
+						[3, false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				SY: {
+					info: "SY",
+					amt: 7,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [],
+					Other: [["E: 2", false]], // TODO
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				TN: {
+					info: "TN",
+					amt: 5,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+						[4, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						[5, false],
+						[6, false],
+						[7, false],
+					],
+					Other: [["FTR: 1-4", false]],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				T: {
+					info: "T",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [[1, false]],
+					Defense: [[1, false]],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						["R", false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["Grnd: 3", false],
+						["AR", false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+				UN: {
+					info: "UN",
+					amt: 6,
+					size: 0,
+					act: false,
+					Attack: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Defense: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Tactics: [
+						[1, false],
+						[2, false],
+						[3, false],
+					],
+					Move: [
+						[2, false],
+						[3, false],
+						[4, false],
+						["R", false],
+						[6, false],
+						[7, false],
+					],
+					Other: [
+						["Sp.A: 1", false],
+						["2", false],
+					],
+					Experience: [
+						["S", false],
+						["V", false],
+						["E", false],
+						["L", false],
+					],
+					oos: false,
+					notes: "",
+				},
+			};
+
+			// actual ship technologies sheet/table in game (with multiple ship groups)
+			let st = {};
+
+			// doomsday machines
+			const dms = {
+				1: {
+					attno: 3,
+					att: "D7",
+					def: 1,
+					hull: 6,
+				},
+				2: {
+					attno: 4,
+					att: "C7",
+					def: 1,
+					hull: 7,
+				},
+				3: {
+					attno: 4,
+					att: "C8",
+					def: 2,
+					hull: 7,
+				},
+				4: {
+					attno: 4,
+					att: "C8",
+					def: 2,
+					hull: 8,
+				},
+				5: {
+					attno: 5,
+					att: "B9",
+					def: 2,
+					hull: 8,
+				},
+				6: {
+					attno: 5,
+					att: "B9",
+					def: 3,
+					hull: 9,
+				},
+				7: {
+					attno: 6,
+					att: "B10",
+					def: 3,
+					hull: 9,
+				},
+				8: {
+					attno: 6,
+					att: "A10",
+					def: 3,
+					hull: 10,
+				},
+				9: {
+					attno: 6,
+					att: "A11",
+					def: 4,
+					hull: 10,
+				},
+				10: {
+					attno: 6,
+					att: "A11",
+					def: 4,
+					hull: 10,
+				},
+			};
+			const dmWeaknesses = {
+				1: {
+					title: "Fighters",
+					desc: "Fighters can fire and damage a DM normally.",
+				},
+				2: {
+					title: "Mines",
+					desc: "Each Mine will cause a hit on a DM on a roll of 1-5.",
+				},
+				3: {
+					title: "Cloaking",
+					desc: "Raiders fire as A-Class and get +1 Attack in the 1st round. This DM gets -2 Attack against Raiders.",
+				},
+				4: {
+					title: "Large Fleets",
+					desc: "Get the Fleet Size Bonus when attacking with 10+ ships.",
+				},
+				5: {
+					title: "None",
+					desc: "Lucky you!",
+				},
+			};
+			const dmDiff = {
+				Small: {
+					Easy: {
+						1: [7, 1],
+						2: [9, 3],
+						3: [11, 5],
+					},
+					Normal: { 1: [7, 2], 2: [9, 4], 3: [10, 6] },
+					Hard: { 1: [6, 1], 2: [8, 3], 3: [10, 5] },
+					Harder: { 1: [6, 2], 2: [8, 4], 3: [9, 6] },
+					"Good Luck!": { 1: [5, 1], 2: [7, 3], 3: [9, 5] },
+				},
+				Large: {
+					Easy: {
+						1: [8, 5],
+						2: [10, 7],
+						3: [12, 9],
+					},
+					Normal: { 1: [8, 6], 2: [10, 8], 3: [11, 10] },
+					Hard: { 1: [7, 5], 2: [9, 7], 3: [11, 9] },
+					Harder: { 1: [7, 6], 2: [9, 8], 3: [10, 10] },
+					"Good Luck!": { 1: [6, 5], 2: [8, 7], 3: [10, 9] },
+				},
+			};
+			let dmsInPlay = {
+				1: {
+					phase: -1,
+					attno: -1,
+					def: -1,
+					hull: -1,
+					weakUnconvered: false,
+					weak: "",
+				},
+				2: {
+					phase: -1,
+					attno: -1,
+					def: -1,
+					hull: -1,
+					weakUnconvered: false,
+					weak: "",
+				},
+				3: {
+					phase: -1,
+					attno: -1,
+					def: -1,
+					hull: -1,
+					weakUnconvered: false,
+					weak: "",
+				},
+			};
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			function fnPhaseZero() {
+				fnAddPhaseColumn();
+				prodPhaseLabels = Object.fromEntries(
+					[
+						...tblProdsheet.querySelectorAll(
+							'[id^="prodPhaseLabel"]'
+						),
+					].map((el) => [el.id, el])
+				);
+				fnSelectProdCol(phases);
+
+				prodCells = Object.fromEntries(
+					[...tblProdsheet.querySelectorAll('[id^="prodCell"]')].map(
+						(el) => [el.id, el]
+					)
+				);
+
+				fnSave();
+			}
+
+			function fnNewPhase() {
+				phases++;
+
+				fnLog(
+					`--------- ECON PHASE ${String(phases).padStart(
+						2,
+						"0"
+					)} / ${fnGetDate()} ---------`
+				);
+				fnAddPhaseColumn();
+				prodPhaseLabels = Object.fromEntries(
+					[
+						...tblProdsheet.querySelectorAll(
+							'[id^="prodPhaseLabel"]'
+						),
+					].map((el) => [el.id, el])
+				);
+				fnSelectProdCol(phases);
+				fnCalcProd();
+
+				prodCells = Object.fromEntries(
+					[...tblProdsheet.querySelectorAll('[id^="prodCell"]')].map(
+						(el) => [el.id, el]
+					)
+				);
+
+				if (phases === 1) {
+					// doomsday scenario first econ phase CP/LP/RP
+					if (dmsInPlay[1].phase !== -1) {
+						if (!rulesFacilities) {
+							fnPurchase(2, 30); // CP
+						} else {
+							fnPurchase(8, 20); // CP
+							fnPurchase(2, 5); // LP
+							fnPurchase(18, 5); // RP
+						}
+					}
+				}
+
+				if (dmsInPlay[1].phase !== -1) {
+					for (let i = 1; i <= 3; i++) {
+						if (phases === dmsInPlay[i].phase) {
+							let loc = fnD10();
+							fnLog(`DM #${i} has arrived at location ${loc}.`);
+							fnSave();
+							alert(`DM #${i} has arrived at location ${loc}.`);
+						}
+					}
+				}
+
+				fnSave();
+				divProd.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
+
+			function fnCalcMaintenance(logResult = false) {
+				let maintenance = 0;
+				let log = "Maintenance: \n";
+				let curr = "CP";
+				if (rulesFacilities) {
+					curr = "LP";
+				}
+				Object.entries(st).forEach(([key, group]) => {
+					if (group.info && !group.oos) {
+						let cp = 0;
+
+						if (group.info === "F") {
+							// fighters
+							cp =
+								parseInt(group.size) *
+								(parseInt(shipList["F1"].maint) || 0);
+
+							maintenance += cp;
+
+							if (cp > 0) {
+								log += `${key}: ${group.size} x ${shipList["F1"].maint} ${curr} = `;
+								log += `${cp} ${curr}\n`;
+							}
+						} else {
+							cp =
+								parseInt(group.size) *
+								(parseInt(shipList[group.info].maint) || 0);
+
+							maintenance += cp;
+
+							if (cp > 0) {
+								log += `${key}: ${group.size} x ${
+									shipList[group.info].maint
+								} ${curr} = `;
+								log += `${cp} ${curr}\n`;
+							}
+						}
+					}
+				});
+
+				if (settingsCalcMaintenance) {
+					if (maintenance > 0 && logResult) {
+						fnLog(`${log}Total: ${maintenance} ${curr}\n`);
+					}
+					return maintenance;
+				} else {
+					return "";
+				}
+			}
+			function fnAddPhaseColumn() {
+				const rows = tblProdsheet.querySelectorAll("tr");
+				let disabled = "";
+				let type = "number";
+				let val = "";
+				let phaseNum = phases;
+				if (phases === 0) {
+					disabled = "disabled";
+					phaseNum = "Pre";
+					type = "text";
+					val = "-";
+				}
+				if (!rulesFacilities) {
+					// with no facilities
+					rows.forEach((row, i) => {
+						tabindex++;
+						// Insert new cell at the end
+						const newCell = row.insertCell(-1);
+
+						if (row.parentNode.tagName === "THEAD") {
+							let ast = "";
+							if (phases > 0 && phases % 2 === 0) {
+								ast = "*";
+							}
+							newCell.outerHTML = `<th id="prodPhaseLabel${phases}" class="prodPhaseLabel txtCenter" onclick="fnSelectProdCol(${phases})">${
+								phaseNum + ast
+							}</th>`;
+						} else {
+							if (i === 1) {
+								// carry over
+								newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex="${tabindex}" value="${val}" readonly disabled>`;
+							} else if (i === 5 || i === 8 || i === 11) {
+								// remaining
+								if (i === 8) {
+									newCell.outerHTML = `<td><input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex="${tabindex}" value="${val}" readonly disabled></td>`;
+								} else {
+									newCell.outerHTML = `<td class="hilite"><input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex="${tabindex}" value="${val}" readonly disabled></td>`;
+								}
+							} else if (i === 6) {
+								// maintenance
+								if (phases > 0) {
+									newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex="${tabindex}" value="${fnCalcMaintenance(
+										true
+									)}">`;
+								} else {
+									newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex="${tabindex}" value="${val}" ${disabled}>`;
+								}
+							} else if (i === 9 || i === 10) {
+								// purchase textareas
+								newCell.innerHTML = `<textarea id="prodCell${phases}-${i}" class="prodCell" tabindex="${tabindex}" rows="12" value="${val}" ${disabled}>${val}</textarea>`;
+							} else if (i === 13 && phases === 0) {
+								newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="number" tabindex="${tabindex}" value="${fnCalcMaintenance(
+									false
+								)}">`;
+							} else if (i === 14) {
+								// bottom row for phase selection
+								newCell.outerHTML = `<td id="prodPhaseLabelBottom${phases}" class="prodPhaseLabel txtCenter" onclick="fnSelectProdCol(${phases})">&nbsp;</td>`;
+							} else {
+								// normal number fields
+								newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex="${tabindex}" value="${val}" ${disabled}>`;
+							}
+						}
+					});
+				} else {
+					// with facilities
+
+					rows.forEach((row, i) => {
+						tabindex++;
+						// Insert new cell at the end
+						const newCell = row.insertCell(-1);
+
+						if (row.parentNode.tagName === "THEAD") {
+							let ast = "";
+							if (phases > 0 && phases % 2 === 0) {
+								ast = "*";
+							}
+							newCell.outerHTML = `<th id="prodPhaseLabel${phases}" class="prodPhaseLabel txtCenter" onclick="fnSelectProdCol(${phases})">${
+								phaseNum + ast
+							}</th>`;
+						} else {
+							if (i === 1 || i === 7 || i === 17 || i === 21) {
+								// carry over
+								newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex=${tabindex}" value="${val}" readonly disabled>`;
+							} else if (
+								i === 6 ||
+								i === 11 ||
+								i === 13 ||
+								i === 15 ||
+								i === 20 ||
+								i === 24
+							) {
+								// remaining
+								if (i === 13) {
+									newCell.outerHTML = `<td><input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex=${tabindex}" value="${val}" readonly disabled></td>`;
+								} else {
+									newCell.outerHTML = `<td class="hilite"><input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex=${tabindex}" value="${val}" readonly disabled></td>`;
+								}
+							} else if (i === 3) {
+								// maintenance
+								if (phases > 0) {
+									newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex=${tabindex}" value="${fnCalcMaintenance(
+										true
+									)}">`;
+								} else {
+									newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex=${tabindex}" value="${val}" ${disabled}>`;
+								}
+							} else if (i === 14 || i === 19 || i === 23) {
+								// purchase textareas
+								newCell.innerHTML = `<textarea id="prodCell${phases}-${i}" class="prodCell" tabindex=${tabindex}" rows="3" value="${val}" ${disabled}>${val}</textarea>`;
+							} else if (i === 25 && phases === 0) {
+								newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="number" tabindex="${tabindex}" value="${fnCalcMaintenance(
+									false
+								)}">`;
+							} else if (i === 26) {
+								newCell.outerHTML = `<td id="prodPhaseLabelBottom${phases}" class="prodPhaseLabel txtCenter" onclick="fnSelectProdCol(${phases})">&nbsp;</td>`;
+							} else {
+								// normal number fields
+								newCell.innerHTML = `<input id="prodCell${phases}-${i}" class="prodCell" type="${type}" tabindex=${tabindex}" value="${val}" ${disabled}>`;
+							}
+						}
+					});
+				}
+
+				fnProdRefreshElements();
+
+				divProd.scrollLeft = divProd.scrollWidth;
+			}
+
+			function fnCalcProd() {
+				if (!rulesFacilities) {
+					// with no facilities
+					for (let ph = 1; ph < phases + 1; ph++) {
+						for (let i = 0; i < 15; i++) {
+							//carry over
+							if (ph > 1) {
+								if (
+									parseInt(
+										pd[`prodCell${ph - 1}-${11}`].value || 0
+									) -
+										parseInt(
+											pd[`prodCell${ph - 1}-${12}`]
+												.value || 0
+										) >
+									30
+								) {
+									pd[`prodCell${ph}-${1}`].value = 30;
+								} else {
+									pd[`prodCell${ph}-${1}`].value =
+										parseInt(
+											pd[`prodCell${ph - 1}-${11}`]
+												.value || 0
+										) -
+										parseInt(
+											pd[`prodCell${ph - 1}-${12}`]
+												.value || 0
+										);
+								}
+							}
+
+							// totals / remaining
+							pd[`prodCell${ph}-${5}`].value = // total CP
+								parseInt(pd[`prodCell${ph}-${1}`].value || 0) +
+								parseInt(pd[`prodCell${ph}-${2}`].value || 0) +
+								parseInt(pd[`prodCell${ph}-${3}`].value || 0) +
+								parseInt(pd[`prodCell${ph}-${4}`].value || 0);
+
+							pd[`prodCell${ph}-${8}`].value = // subtotal CP
+								parseInt(pd[`prodCell${ph}-${5}`].value || 0) -
+								parseInt(pd[`prodCell${ph}-${6}`].value || 0) -
+								parseInt(pd[`prodCell${ph}-${7}`].value || 0);
+
+							pd[`prodCell${ph}-${11}`].value = Math.max(
+								0,
+								parseInt(pd[`prodCell${ph}-${8}`].value || 0) -
+									parseInt(
+										fnParseTextarea(
+											pd[`prodCell${ph}-${9}`].value
+										) || 0
+									) -
+									parseInt(
+										fnParseTextarea(
+											pd[`prodCell${ph}-${10}`].value
+										) || 0
+									)
+							); // remaining CP
+							spRemCP.innerHTML =
+								pd[`prodCell${ph}-${11}`].value + " CP";
+						}
+					}
+				} else {
+					// with facilities
+					for (let ph = 1; ph < phases + 1; ph++) {
+						for (let i = 0; i < 25; i++) {
+							//carry over
+							if (ph > 1) {
+								pd[`prodCell${ph}-${1}`].value = parseInt(
+									pd[`prodCell${ph - 1}-${6}`].value || 0
+								);
+								if (
+									parseInt(
+										pd[`prodCell${ph - 1}-${15}`].value || 0
+									) -
+										parseInt(
+											pd[`prodCell${ph - 1}-${16}`]
+												.value || 0
+										) >
+									30
+								) {
+									pd[`prodCell${ph}-${7}`].value = 30;
+								} else {
+									pd[`prodCell${ph}-${7}`].value =
+										parseInt(
+											pd[`prodCell${ph - 1}-${15}`]
+												.value || 0
+										) -
+										parseInt(
+											pd[`prodCell${ph - 1}-${16}`]
+												.value || 0
+										);
+								}
+								if (
+									parseInt(
+										pd[`prodCell${ph - 1}-${20}`].value || 0
+									) > 30
+								) {
+									pd[`prodCell${ph}-${17}`].value = 30;
+								} else {
+									pd[`prodCell${ph}-${17}`].value = parseInt(
+										pd[`prodCell${ph - 1}-${20}`].value || 0
+									);
+								}
+
+								pd[`prodCell${ph}-${21}`].value = parseInt(
+									pd[`prodCell${ph - 1}-${24}`].value || 0
+								);
+							}
+
+							// totals / remaining
+							pd[`prodCell${ph}-${6}`].value = Math.max(
+								0,
+								parseInt(pd[`prodCell${ph}-${1}`].value || 0) +
+									parseInt(
+										pd[`prodCell${ph}-${2}`].value || 0
+									) -
+									parseInt(
+										pd[`prodCell${ph}-${3}`].value || 0
+									) -
+									parseInt(
+										pd[`prodCell${ph}-${4}`].value || 0
+									) -
+									parseInt(
+										pd[`prodCell${ph}-${5}`].value || 0
+									)
+							);
+
+							pd[`prodCell${ph}-${11}`].value =
+								parseInt(pd[`prodCell${ph}-${7}`].value || 0) +
+								parseInt(pd[`prodCell${ph}-${8}`].value || 0) +
+								parseInt(pd[`prodCell${ph}-${9}`].value || 0) +
+								parseInt(pd[`prodCell${ph}-${10}`].value || 0);
+
+							pd[`prodCell${ph}-${13}`].value =
+								parseInt(pd[`prodCell${ph}-${11}`].value || 0) -
+								parseInt(pd[`prodCell${ph}-${12}`].value || 0);
+							// parseInt(pd[`prodCell${ph}-${12}`].value || 0) *3; // penalty LP multiplier
+
+							pd[`prodCell${ph}-${15}`].value = Math.max(
+								0,
+								parseInt(pd[`prodCell${ph}-${13}`].value || 0) -
+									parseInt(
+										fnParseTextarea(
+											pd[`prodCell${ph}-${14}`].value
+										) || 0
+									)
+							);
+							spRemCP.innerHTML =
+								pd[`prodCell${ph}-${15}`].value + " CP";
+
+							pd[`prodCell${ph}-${20}`].value = Math.max(
+								0,
+								parseInt(pd[`prodCell${ph}-${17}`].value || 0) +
+									parseInt(
+										pd[`prodCell${ph}-${18}`].value || 0
+									) -
+									parseInt(
+										fnParseTextarea(
+											pd[`prodCell${ph}-${19}`].value
+										) || 0
+									)
+							);
+
+							pd[`prodCell${ph}-${24}`].value = Math.max(
+								0,
+								parseInt(pd[`prodCell${ph}-${21}`].value || 0) +
+									parseInt(
+										pd[`prodCell${ph}-${22}`].value || 0
+									) -
+									parseInt(
+										fnParseTextarea(
+											pd[`prodCell${ph}-${23}`].value
+										) || 0
+									)
+							);
+						}
+					}
+				}
+
+				fnSave();
+			}
+
+			function fnProdRefreshElements() {
+				const fields = document.querySelectorAll(".prodCell");
+				fields.forEach((field) => {
+					try {
+						field.removeEventListener("input", fnCalcProd);
+						field.removeEventListener("change", fnCalcProd);
+						field.removeEventListener("focus", (e) => {
+							fnNumPad("show", e);
+						});
+						field.removeEventListener("blur", (e) => {
+							fnNumPad("hide");
+						});
+					} catch (error) {}
+
+					field.addEventListener("input", fnCalcProd);
+					field.addEventListener("change", fnCalcProd);
+					field.addEventListener("focus", (e) => {
+						fnNumPad("show", e);
+					});
+					field.addEventListener("blur", (e) => {
+						fnNumPad("hide");
+					});
+				});
+
+				pd = {};
+				document.querySelectorAll(".prodCell").forEach((el) => {
+					pd[el.id] = el;
+				});
+			}
+
+			function fnParseTextarea(txt) {
+				let txtSanitized = txt.replace(/\r?\n/g, "+"); // replace newlines with +
+				txtSanitized = txtSanitized.replace(/[^0-9+]/g, ""); // remove non-number characters
+				txtSanitized = txtSanitized.replace(/\++/g, "+"); // replace multiple ++++
+				txtSanitized = txtSanitized.replace(/^\+|\+$/g, ""); // replace leading/trailing +
+
+				if (txtSanitized === "") {
+					return 0;
+				}
+
+				return Function(
+					"'use strict'; return (" + txtSanitized + ")"
+				)();
+			}
+
+			function fnSelectProdCol(col) {
+				selectedColumn = col;
+				for (let i = 0; i <= phases; i++) {
+					prodPhaseLabels[
+						"prodPhaseLabel" + i
+					].style.backgroundColor = "var(--bg)";
+					prodPhaseLabels[
+						"prodPhaseLabelBottom" + i
+					].style.backgroundColor = "var(--bg)";
+				}
+				prodPhaseLabels["prodPhaseLabel" + col].style.backgroundColor =
+					"var(--acc)";
+				prodPhaseLabels[
+					"prodPhaseLabelBottom" + col
+				].style.backgroundColor = "var(--acc)";
+
+				fnSave();
+			}
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			function fnRenderTechProgTable() {
+				let html = "";
+				Object.entries(tp).forEach(([key, entry]) => {
+					html += `<tr>`;
+
+					html += `<td class="fixedW2">${key} <span class="helpIcon" onclick="fnShowTechInfo('${key}')">(?)</span></td>`;
+
+					entry.prog.forEach((pEntry, i) => {
+						let title = pEntry[3];
+						if (pEntry[3] === "-" && entry.info) {
+							title = entry.info;
+						}
+
+						let autoPur = "";
+						if (autoPurchase) {
+							autoPur = "txtPriceRed";
+						}
+
+						if (i === 0) {
+							html += `<td class="techProgLvl txtCenter techProgActive" title="${title}">${pEntry[0]}</td>`;
+						} else {
+							if (pEntry[2]) {
+								html += `<td id="tdTechProg${key}-${i}" class="techProgLvl txtCenter techProgActive" onclick="fnToggleTechProg('${key}', ${i})" title="${title}">${pEntry[0]} <span class="txtPrice ${autoPur}">${pEntry[1]}</span></td>`;
+							} else {
+								html += `<td id="tdTechProg${key}-${i}" class="techProgLvl txtCenter" onclick="fnToggleTechProg('${key}', ${i})" title="${title}">${pEntry[0]} <span class="txtPrice ${autoPur}">${pEntry[1]}</span></td>`;
+							}
+						}
+					});
+
+					html += `</tr>`;
+				});
+				tblTechBody.innerHTML = html;
+
+				const fields = document.querySelectorAll("input.techProgNum");
+				fields.forEach((field) => {
+					try {
+						field.removeEventListener("input", function () {
+							fnRegisterTechProgNum(
+								field.dataset.key,
+								field.value
+							);
+						});
+
+						field.removeEventListener("change", function () {
+							fnRegisterTechProgNum(
+								field.dataset.key,
+								field.value
+							);
+						});
+					} catch (error) {}
+					field.addEventListener("input", function () {
+						fnRegisterTechProgNum(field.dataset.key, field.value);
+					});
+
+					field.addEventListener("change", function () {
+						fnRegisterTechProgNum(field.dataset.key, field.value);
+					});
+				});
+
+				fnSave();
+			}
+
+			function fnToggleTechProg(tech, lvl) {
+				if (tp[tech]) {
+					tp[tech].prog[lvl][2] = !tp[tech].prog[lvl][2];
+
+					if (tp[tech].prog[lvl][2] && autoPurchase) {
+						let currCell = 9; // cp on no-facilities table
+						if (rulesFacilities) {
+							currCell = 19; // rp on facilities table
+						}
+						document
+							.getElementById(`tdTechProg${tech}-${lvl}`)
+							.classList.add("techProgActive");
+
+						fnLog(
+							`Purchased ${tech} ${lvl} for ${tp[tech].prog[lvl][1]} CP`
+						);
+						fnPurchase(currCell, tp[tech].prog[lvl][1]);
+					} else {
+						if (tp[tech].prog[lvl][2]) {
+							document
+								.getElementById(`tdTechProg${tech}-${lvl}`)
+								.classList.add("techProgActive");
+							fnLog(`Added ${tech} ${lvl}`);
+						} else {
+							document
+								.getElementById(`tdTechProg${tech}-${lvl}`)
+								.classList.remove("techProgActive");
+							fnLog(`Removed ${tech} ${lvl}`);
+						}
+					}
+				}
+				fnRenderShipTable();
+				fnSave();
+			}
+
+			function fnPurchase(cell, amt) {
+				let newLine = "";
+				if (
+					prodCells[`prodCell${selectedColumn}-${cell}`].value !== ""
+				) {
+					newLine = "\n";
+				}
+				prodCells[`prodCell${selectedColumn}-${cell}`].value += `${
+					newLine + amt
+				}`;
+				fnCalcProd();
+			}
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			function fnInitShipData() {
+				st = Object.entries(stDB).reduce((acc, [key, value]) => {
+					let amount = stDB[key].amt;
+					for (let i = 1; i <= amount; i++) {
+						if (amount > 1) {
+							acc[`${key} #${i}`] = JSON.parse(
+								JSON.stringify(value)
+							);
+						} else {
+							acc[`${key}`] = JSON.parse(JSON.stringify(value));
+						}
+					}
+					return acc;
+				}, {});
+				st["UNHeader"] = { act: false }; //add special entry for the unique ship info row
+			}
+
+			function fnRenderShipTable() {
+				let html = "";
+				let uniqueShipHeaderCreated = false;
+				Object.entries(st).forEach(([key, entry]) => {
+					if (key === "UNHeader") return; // skip special unique ship info entry
+
+					let cost = "error " + key + "-" + entry;
+					let hull = "";
+
+					if (entry.info === "F") {
+						if (tp["Fighters"].prog[0][2]) {
+							cost = shipList["F1"].cp + " CP";
+						}
+						if (tp["Fighters"].prog[1][2]) {
+							cost = shipList["F2"].cp + " CP";
+						}
+						if (tp["Fighters"].prog[2][2]) {
+							cost = shipList["F3"].cp + " CP";
+						}
+						if (tp["Fighters"].prog[3][2]) {
+							cost = shipList["F4"].cp + " CP";
+						} // it's always 5 CP, but still ...
+						hull = ", " + shipList["F1"].hull + " Hull";
+					} else if (entry.info) {
+						cost = shipList[entry.info].cp + " CP";
+						hull = ", " + shipList[entry.info].hull + " Hull";
+					}
+					if (entry.info === "UN" && !uniqueShipHeaderCreated) {
+						uniqueShipHeaderCreated = true;
+						let chked = "unchecked";
+
+						if (st.UNHeader.act) {
+							chked = "checked";
+						}
+
+						let hide = "";
+						if (!showAllShips && !st.UNHeader.act) {
+							hide = "hidden";
+						}
+						html += `<tr id="trShipUNHeader" class="${hide}">`;
+						html += `<td><label><input id="chkShipUNHeader" type="checkbox" onclick="fnShipActiveToggle('UNHeader')" ${chked}>UN</label> <span class="helpIcon" onclick="fnShowShipInfo('UN')">(?)</span></td>`;
+						html += `<td></td><td colspan="8"><div id="divUNStats"><div>Cost: <input id="txtUNCost" type="number" tabindex="-1" value="${shipList.UN.cp}" placeholder="CP" onchange="fnUpdateUNCost()"></div><div>Maint.: <input id="txtUNMaint" type="number" tabindex="-1" value="${shipList.UN.maint}" placeholder="Hull" onchange="fnUpdateUNMaint()"></div>Stats: <input id="txtUNInfos" type="text" tabindex="-1" value="${shipList.UN.userstats}" placeholder="Unique ship stats ..." onchange="fnUpdateUNInfos()"></div>`;
+						html += `</td></tr>`;
+					}
+					if (!showAllShips && !entry.act) {
+						html += `<tr id="trShip${key}" class="hidden">`;
+					} else {
+						html += `<tr id="trShip${key}">`;
+					}
+
+					let titleName = "";
+					if (entry.info !== "F") {
+						titleName =
+							shipList[entry.info].name +
+							"   |   Att: " +
+							shipList[entry.info].att +
+							"   Def: " +
+							shipList[entry.info].def +
+							"   Hull: " +
+							shipList[entry.info].hull +
+							"   Maint: " +
+							shipList[entry.info].maint +
+							"   CP: " +
+							shipList[entry.info].cp;
+					} else if (entry.info === "F") {
+						titleName = "Fighters";
+					}
+					if (entry.act) {
+						html += `<td><label title="${titleName}"><input id="chkShip${key}" type="checkbox" onclick="fnShipActiveToggle('${key}')" checked>${key}</label> <span class="helpIcon" onclick="fnShowShipInfo('${entry.info}')">(?)</span></td>`;
+					} else {
+						html += `<td><label title="${titleName}"><input id="chkShip${key}" type="checkbox" onclick="fnShipActiveToggle('${key}')" unchecked>${key}</label> <span class="helpIcon" onclick="fnShowShipInfo('${entry.info}')">(?)</span></td>`;
+					}
+
+					let autoPur = "";
+					if (autoPurchase) {
+						autoPur = "bgRed";
+					}
+					html += `<td class="txtCenter txtBold"><button class="btnRemoveShip" onclick="fnAddRemoveShip('${key}', -1)">-</button>&emsp;<span id="spSize${key}">${entry.size}</span>&emsp;<button id="btnAddShip${key}" class="btnAddShip ${autoPur}" onclick="fnAddRemoveShip('${key}', 1)" title="${cost}${hull}">+</button></td>`;
+
+					html += `<td><input id="txtShipNotes${key}" class="txtShipNotes" type="text" tabindex="-1" value="${entry.notes}" placeholder="Notes ..." onchange="fnUpdateShipNotes('${key}')"></td>`;
+
+					let chked = "unchecked";
+					if (entry.oos) {
+						chked = "checked";
+					}
+					html += `<td class="txtCenter"><label title="Out of Supply"><input id="chkOOS${key}" type="checkbox" onclick="fnShipOOSToggle('${key}')" ${chked}></label></td>`;
+
+					const techs = ["Attack", "Defense", "Tactics", "Move"];
+					techs.forEach((tech) => {
+						html += `<td>`;
+						entry[tech].forEach((techEntry, i) => {
+							let techAvailable = "";
+							if (tp[tech].prog[i + 1][2]) {
+								// i+1 to skip the initial tech level
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+							if (techEntry[1]) {
+								html += `<div id="${key}-${tech}-${i}" class="${techAvailable}shipTechActive" onclick="fnToggleShipTech('${key}', '${tech}', ${i})" title="${
+									tp[tech].prog[i + 1][3]
+								}">${techEntry[0]}</div>`;
+							} else {
+								html += `<div id="${key}-${tech}-${i}" class="${techAvailable}" onclick="fnToggleShipTech('${key}', '${tech}', ${i})" title="${
+									tp[tech].prog[i + 1][3]
+								}">${techEntry[0]}</div>`;
+							}
+						});
+						html += `</td>`;
+					});
+
+					html += `<td>`;
+					entry.Other.forEach((othEntry, i) => {
+						let techAvailable = "";
+						let title = "other Tech";
+						if (key.startsWith("CO")) {
+							title = tp["Terraforming"].prog[1][3];
+							if (tp["Terraforming"].prog[1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("MINER")) {
+							title = tp["Terraforming"].prog[2][3];
+							if (tp["Terraforming"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("BASE")) {
+							title = tp["Exploration"].prog[2][3];
+							if (tp["Exploration"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("SY")) {
+							title = tp["Exploration"].prog[2][3];
+							if (tp["Exploration"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("BC")) {
+							title = tp["Fast"].prog[1][3];
+							if (tp["Fast"].prog[1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("BV")) {
+							title = tp["Fast"].prog[2][3];
+							if (tp["Fast"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("SC")) {
+							title = tp["Point Defense"].prog[i + 1][3];
+							if (tp["Point Defense"].prog[i + 1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i < 3 && key.startsWith("SW")) {
+							title = tp["Mine Sweeper"].prog[i + 2][3];
+							if (tp["Mine Sweeper"].prog[i + 2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i < 1 && key.startsWith("TN")) {
+							title = tp["Fighters"].prog[i + 1][3];
+							if (tp["Fighters"].prog[i + 1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i < 3 && key.startsWith("F ")) {
+							title = tp["Fighters"].prog[i + 2][3];
+							if (tp["Fighters"].prog[i + 2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i < 2 && key.startsWith("FLAG")) {
+							title = tp["Exploration"].prog[i + 1][3];
+							if (tp.Exploration.prog[i + 1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 2 && key.startsWith("FLAG")) {
+							title = tp["Fast"].prog[i][3];
+							if (i == 2 && tp["Fast"].prog[1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 0 && key.startsWith("T ")) {
+							title = tp["Ground"].prog[2][3];
+							if (tp.Ground.prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 1 && key.startsWith("T ")) {
+							title = tp["Anti-Replicator"].prog[1][3];
+							if (tp["Anti-Replicator"].prog[1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("BD/MB")) {
+							title = tp["Boarding"].prog[2][3];
+							if (tp.Boarding.prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i < 2 && key.startsWith("DD")) {
+							title = tp["Scanners"].prog[i + 1][3];
+							if (tp.Scanners.prog[i + 1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 2 && key.startsWith("DD")) {
+							title = tp["Fast"].prog[2][3];
+							if (tp["Fast"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("BB")) {
+							title = tp["Tractor Beam"].prog[1][3];
+							if (tp["Tractor Beam"].prog[1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (key.startsWith("DN")) {
+							title = tp["Shield Projector"].prog[1][3];
+							if (tp["Shield Projector"].prog[1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 0 && key.startsWith("R ")) {
+							title = tp["Cloaking"].prog[2][3];
+							if (tp.Cloaking.prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 1 && key.startsWith("R ")) {
+							title = tp["Fast"].prog[2][3];
+							if (tp["Fast"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i == 2 && key.startsWith("R ")) {
+							title = tp["Ground"].prog[2][3];
+							if (tp["Ground"].prog[2][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i < 2 && key.startsWith("CA")) {
+							title = tp["Exploration"].prog[i + 1][3];
+							if (tp.Exploration.prog[i + 1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						} else if (i >= 2 && i < 4 && key.startsWith("CA")) {
+							title = tp["Jamming Tech"].prog[i - 1][3];
+							if (tp["Jamming Tech"].prog[i - 1][2]) {
+								techAvailable = "shipTechAvailable ";
+								if (rulesInstantUpgrade) {
+									techAvailable += " shipTechActive ";
+								}
+							}
+						}
+						if (othEntry[1]) {
+							html += `<div id="${key}-Other-${i}" class="${techAvailable}shipTechActive" onclick="fnToggleShipTech('${key}', 'Other', ${i})" title="${title}">${othEntry[0]}</div>`;
+						} else {
+							html += `<div id="${key}-Other-${i}" class="${techAvailable}" onclick="fnToggleShipTech('${key}', 'Other', ${i})" title="${title}">${othEntry[0]}</div>`;
+						}
+					});
+					html += `</td>`;
+
+					html += `<td>`;
+					entry.Experience.forEach((expEntry, i) => {
+						if (expEntry[1]) {
+							html += `<div id="${key}-Experience-${i}" class="shipTechActive" onclick="fnToggleShipTech('${key}', 'Experience', ${i})">${expEntry[0]}</div>`;
+						} else {
+							html += `<div id="${key}-Experience-${i}" onclick="fnToggleShipTech('${key}', 'Experience', ${i})">${expEntry[0]}</div>`;
+						}
+					});
+					html += `</td>`;
+
+					html += `</tr>`;
+				});
+				tblShipBody.innerHTML = html;
+
+				shipChks = Object.fromEntries(
+					[...document.querySelectorAll('[id^="chkShip"]')].map(
+						(el) => [el.id, el]
+					)
+				);
+
+				fnShipTableAltRowColors();
+
+				txtUNCost = document.getElementById("txtUNCost");
+				txtUNInfos = document.getElementById("txtUNInfos");
+				shipPlusButtons = Object.fromEntries(
+					[...document.querySelectorAll('[id^="btnAddShip"]')].map(
+						(el) => [el.id, el]
+					)
+				);
+			}
+
+			function fnToggleShipTech(ship, tech, lvl) {
+				if (st[ship]) {
+					st[ship][tech][lvl][1] = !st[ship][tech][lvl][1];
+				}
+
+				fnSave();
+
+				document
+					.getElementById(`${ship}-${tech}-${lvl}`)
+					.classList.toggle("shipTechActive");
+			}
+
+			function fnShipActiveToggle(ship) {
+				if (shipChks["chkShip" + ship].checked) {
+					st[ship].act = true;
+				} else {
+					st[ship].act = false;
+				}
+
+				if (!chkShowAllShips.checked) {
+					fnShipShowAllToggle();
+				}
+
+				fnSave();
+			}
+
+			function fnShipShowAllToggle() {
+				if (chkShowAllShips.checked) {
+					showAllShips = true;
+					Object.values(shipChks).forEach((entry) => {
+						document
+							.getElementById("tr" + entry.id.slice(3))
+							.classList.remove("hidden");
+					});
+					divShip.scrollIntoView({
+						behavior: "smooth",
+						block: "start",
+					});
+				} else {
+					showAllShips = false;
+					Object.values(shipChks).forEach((entry) => {
+						if (!entry.checked) {
+							document
+								.getElementById("tr" + entry.id.slice(3))
+								.classList.add("hidden");
+						}
+					});
+				}
+
+				fnSave();
+				fnShipTableAltRowColors();
+			}
+
+			function fnShipTableAltRowColors() {
+				const shipRows = tblShip.querySelectorAll("tr:not(.hidden)");
+				let altRowToggle = false;
+				let prevShip = "";
+
+				shipRows.forEach((row) => {
+					const cells = row.querySelectorAll("td");
+					if (row.id.slice(0, 8) !== prevShip) {
+						altRowToggle = !altRowToggle;
+					}
+					if (altRowToggle) {
+						cells.forEach((cell) => {
+							cell.classList.remove("alternateShipRow");
+						});
+					} else {
+						cells.forEach((cell) => {
+							cell.classList.add("alternateShipRow");
+						});
+					}
+
+					prevShip = row.id.slice(0, 8);
+				});
+			}
+
+			function fnAddRemoveShip(group, amt) {
+				let log = "";
+				st[group].size += amt;
+				if (st[group].size < 0) {
+					// remove check (hide group) if group size = 0
+					st[group].size = 0;
+					/* if (shipChks["chkShip" + group].checked) {
+							shipChks["chkShip" + group].click();
+						} */
+				} else if (st[group].size > 9) {
+					st[group].size = 9;
+				} else {
+					if (amt > 0) {
+						log = `Added ${group}.`;
+					} else {
+						log = `Removed ${group}.`;
+					}
+					if (!shipChks["chkShip" + group].checked) {
+						shipChks["chkShip" + group].click();
+					}
+
+					if (autoPurchase && amt > 0) {
+						// only add cost when adding ships, not when removing
+						let price = 0;
+						if (st[group].info === "F") {
+							price = shipList["F1"].cp; // always 5 CP for fighters
+						} else if (st[group].info === "UN") {
+							price = shipList["UN"].cp;
+						} else {
+							price = shipList[st[group].info].cp;
+						}
+						if (Number.isInteger(price)) {
+							let row = 10; // cp on no-facilities table
+							if (rulesFacilities) {
+								row = 14; // cp on facilities table
+							}
+							fnPurchase(row, price);
+							log = `Purchased ${group} for ${price} CP.`;
+						} else {
+							log = `Added ${group}.`;
+							console.log(
+								"ERROR: no price for: " +
+									shipList[st[group].info].name
+							);
+						}
+					}
+				}
+				if (log !== "") {
+					fnLog(log);
+				}
+				if (!rulesFacilities) {
+					document.getElementById(`prodCell${phases}-13`).value =
+						fnCalcMaintenance(false);
+				} else {
+					document.getElementById(`prodCell${phases}-25`).value =
+						fnCalcMaintenance(false);
+				}
+				fnSave();
+				document.getElementById("spSize" + group).innerText =
+					st[group].size;
+			}
+
+			function fnShipOOSToggle(key) {
+				st[key].oos = document.getElementById("chkOOS" + key).checked;
+				fnSave();
+			}
+
+			function fnUpdateShipNotes(key) {
+				st[key].notes = document.getElementById(
+					"txtShipNotes" + key
+				).value;
+				fnSave();
+			}
+
+			function fnUpdateUNCost() {
+				shipList.UN.cp = parseInt(txtUNCost.value) || 0;
+				Object.values(shipPlusButtons).forEach((btn) => {
+					if (btn.id.startsWith("btnAddShipUN")) {
+						btn.title = shipList.UN.cp + " CP, * Hull";
+					}
+				});
+				fnSave();
+			}
+
+			function fnUpdateUNMaint() {
+				shipList.UN.maint = parseInt(txtUNMaint.value) || 0;
+				fnSave();
+			}
+
+			function fnUpdateUNInfos() {
+				shipList.UN.userstats = txtUNInfos.value;
+				fnSave();
+			}
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			function fnLog(txt) {
+				if (!loading) {
+					txtLog.value += `${txt}\n`;
+					txtLog.scrollTop = txtLog.scrollHeight;
+				}
+			}
+			function fnCheckboxes() {
+				if (chkRulesFacilities.checked) {
+					rulesFacilities = true;
+				} else {
+					rulesFacilities = false;
+				}
+
+				if (chkRulesInstantUpgrade.checked) {
+					rulesInstantUpgrade = true;
+				} else {
+					rulesInstantUpgrade = false;
+				}
+
+				if (chkSettingsCalcMaintenance.checked) {
+					settingsCalcMaintenance = true;
+				} else {
+					settingsCalcMaintenance = false;
+				}
+
+				if (chkSettingsHideNumPad.checked) {
+					settingsHideNumPad = true;
+				} else {
+					settingsHideNumPad = false;
+				}
+
+				if (chkAutoPurchase.checked) {
+					autoPurchase = true;
+					lblAutoPurchase.classList.add("txtPriceRed");
+					const techPriceLabels =
+						document.querySelectorAll(".txtPrice");
+					techPriceLabels.forEach((entry) => {
+						entry.classList.add("txtPriceRed");
+					});
+					const shipAddButtons =
+						document.querySelectorAll(".btnAddShip");
+					shipAddButtons.forEach((btn) => {
+						btn.classList.add("bgRed");
+					});
+				} else {
+					autoPurchase = false;
+					lblAutoPurchase.classList.remove("txtPriceRed");
+					const techPriceLabels =
+						document.querySelectorAll(".txtPrice");
+					techPriceLabels.forEach((entry) => {
+						entry.classList.remove("txtPriceRed");
+					});
+					const shipAddButtons =
+						document.querySelectorAll(".btnAddShip");
+					shipAddButtons.forEach((btn) => {
+						btn.classList.remove("bgRed");
+					});
+				}
+
+				fnSave();
+			}
+
+			function fnSave() {
+				if (!loading) {
+					let econData = [];
+					Object.values(pd).forEach((entry) => {
+						econData.push(entry.value);
+					});
+					gameData["appVersion"] = appVersion;
+					gameData["appDate"] = appDate;
+					gameData["theme"] = theme;
+					gameData["phases"] = phases;
+					gameData["rulesFacilities"] = rulesFacilities;
+					gameData["rulesInstantUpgrade"] = rulesInstantUpgrade;
+					gameData["settingsCalcMaintenance"] =
+						settingsCalcMaintenance;
+					gameData["settingsHideNumPad"] = settingsHideNumPad;
+
+					gameData["autoPurchase"] = autoPurchase;
+					gameData["selectedColumn"] = selectedColumn;
+					gameData["txtLog"] = txtLog.value;
+					gameData["txtNotes"] = txtNotes.value;
+					gameData["econData"] = econData;
+
+					gameData["tp"] = tp;
+					gameData["st"] = st;
+					gameData["shipList"] = shipList;
+					gameData["showAllShips"] = showAllShips;
+					gameData["dmsInPlay"] = dmsInPlay;
+
+					localStorage.setItem(
+						"gbfSE4XgameData",
+						JSON.stringify(gameData)
+					);
+				}
+			}
+
+			function fnDice(die) {
+				document.getElementById("divDice").style.display = "block";
+				const res = fnD10();
+				const ms = 10;
+				let counter = 0;
+				if (die === "all") {
+					fnDice("tdDiceBH");
+					fnDice("tdDiceBHSS");
+					fnDice("tdDiceWreck");
+					fnDice("1");
+					fnDice("2");
+					fnDice("3");
+					fnDice("4");
+					fnDice("5");
+					fnDice("6");
+					fnDice("7");
+					fnDice("8");
+					fnDice("9");
+					fnDice("10");
+					fnDice("11");
+					fnDice("12");
+				} else if (die === "tdDiceBH") {
+					const interval = setInterval(() => {
+						tdDiceBH.innerHTML = fnD10();
+						counter++;
+						if (counter > 20) {
+							if (res >= 7) {
+								tdDiceBH.innerHTML = `Destroyed! <span class="txtSmall">(${res})</span>`;
+							} else {
+								tdDiceBH.innerHTML = `Survived! <span class="txtSmall">(${res})</span>`;
+							}
+							clearInterval(interval);
+						}
+					}, ms);
+				} else if (die === "tdDiceBHSS") {
+					const interval = setInterval(() => {
+						tdDiceBHSS.innerHTML = fnD10();
+						counter++;
+						if (counter > 20) {
+							if (res + 2 >= 7) {
+								tdDiceBHSS.innerHTML = `Destroyed! <span class="txtSmall">(${res})</span>`;
+							} else {
+								tdDiceBHSS.innerHTML = `Survived! <span class="txtSmall">(${res})</span>`;
+							}
+							clearInterval(interval);
+						}
+					}, ms);
+				} else if (die === "tdDiceWreck") {
+					const interval = setInterval(() => {
+						tdDiceWreck.innerHTML = fnD10();
+						counter++;
+						if (counter > 20) {
+							if (res <= 2) {
+								tdDiceWreck.innerHTML = `Ship Size +1 <span class="txtSmall">(${res})</span>`;
+							} else if (res === 3 || res === 4) {
+								tdDiceWreck.innerHTML = `Attack +1 <span class="txtSmall">(${res})</span>`;
+							} else if (res === 5 || res === 6) {
+								tdDiceWreck.innerHTML = `Defense +1 <span class="txtSmall">(${res})</span>`;
+							} else if (res === 7) {
+								tdDiceWreck.innerHTML = `Tactics +1 <span class="txtSmall">(${res})</span>`;
+							} else if (res === 8 || res === 9) {
+								tdDiceWreck.innerHTML = `Move +1 <span class="txtSmall">(${res})</span>`;
+							} else if (res === 10) {
+								tdDiceWreck.innerHTML = `Ship Yard +1 <span class="txtSmall">(${res})</span>`;
+							}
+							clearInterval(interval);
+						}
+					}, ms);
+				} else {
+					const interval = setInterval(() => {
+						tdDiceD10[die].innerHTML = fnD10();
+						counter++;
+						if (counter > 20) {
+							tdDiceD10[die].innerHTML = res;
+							clearInterval(interval);
+						}
+					}, ms);
+				}
+			}
+
+			function fnHideDice() {
+				document.getElementById("divDice").style.display = "none";
+			}
+
+			function fnD10() {
+				return Math.floor(Math.random() * 10) + 1;
+			}
+
+			function fnNumPad(num, e = null) {
+				if (!settingsHideNumPad) {
+					if (num === "show") {
+						if (e) {
+							numPadEvent = e;
+							if (numPadEvent.target.tagName === "INPUT") {
+								document.getElementById(
+									"divNumPadBtnC"
+								).innerHTML = "X";
+							} else {
+								document.getElementById(
+									"divNumPadBtnC"
+								).innerHTML = "<";
+							}
+							divNumPad.style.display = "block";
+							divNumPad.style.left = `${
+								e.target.getBoundingClientRect().right +
+								window.scrollX +
+								5
+							}px`;
+							divNumPad.style.top = `${
+								e.target.getBoundingClientRect().top +
+								window.scrollY
+							}px`;
+						}
+					} else if (num === "hide") {
+						divNumPad.style.display = "none";
+					} else if (num === "backspace") {
+						if (numPadEvent.target.tagName === "TEXTAREA") {
+							numPadSelStart = numPadEvent.target.selectionStart;
+							numPadSelEnd = numPadEvent.target.selectionEnd;
+							if (!(numPadSelStart === 0 && numPadSelEnd === 0)) {
+								if (numPadSelStart !== numPadSelEnd) {
+									numPadEvent.target.value =
+										numPadEvent.target.value.slice(
+											0,
+											numPadSelStart
+										) +
+										numPadEvent.target.value.slice(
+											numPadSelEnd
+										);
+									numPadEvent.target.selectionStart =
+										numPadSelStart;
+									numPadEvent.target.selectionEnd =
+										numPadSelStart;
+								} else {
+									numPadEvent.target.value =
+										numPadEvent.target.value.slice(
+											0,
+											numPadSelStart - 1
+										) +
+										numPadEvent.target.value.slice(
+											numPadSelEnd
+										);
+									numPadEvent.target.selectionStart =
+										numPadSelStart - 1;
+									numPadEvent.target.selectionEnd =
+										numPadSelStart - 1;
+								}
+							}
+						} else {
+							numPadEvent.target.value = "";
+							// numPadEvent.target.value = numPadEvent.target.value.slice(0, -1);
+						}
+						numPadEvent.target.dispatchEvent(
+							new Event("change", { bubbles: true })
+						);
+					} else if (num === "enter") {
+						if (numPadEvent.target.tagName === "TEXTAREA") {
+							numPadSelStart = numPadEvent.target.selectionStart;
+							numPadSelEnd = numPadEvent.target.selectionEnd;
+							numPadEvent.target.value =
+								numPadEvent.target.value.slice(
+									0,
+									numPadSelStart
+								) +
+								"\n" +
+								numPadEvent.target.value.slice(numPadSelEnd);
+							numPadEvent.target.selectionStart =
+								numPadSelStart + 1;
+							numPadEvent.target.selectionEnd =
+								numPadSelStart + 1;
+
+							numPadEvent.target.dispatchEvent(
+								new Event("change", { bubbles: true })
+							);
+						} else {
+							numPadEvent.target.blur();
+						}
+					} else {
+						if (numPadEvent.target.tagName === "TEXTAREA") {
+							numPadSelStart = numPadEvent.target.selectionStart;
+							numPadSelEnd = numPadEvent.target.selectionEnd;
+							numPadEvent.target.value =
+								numPadEvent.target.value.slice(
+									0,
+									numPadSelStart
+								) +
+								num +
+								numPadEvent.target.value.slice(numPadSelEnd);
+							numPadEvent.target.selectionStart =
+								numPadSelStart + 1;
+							numPadEvent.target.selectionEnd =
+								numPadSelStart + 1;
+						} else {
+							numPadEvent.target.value += num;
+						}
+
+						numPadEvent.target.dispatchEvent(
+							new Event("change", { bubbles: true })
+						);
+					}
+				} else {
+					divNumPad.style.display = "none";
+				}
+			}
+			function fnInitApp() {
+				if (rulesFacilities) {
+					tblProdsheet = tblProdFacilities;
+				} else {
+					tblProdsheet = tblProdNoFacilities;
+				}
+				tblProdsheet.classList.remove("hidden");
+
+				fnRenderTechProgTable();
+				fnInitShipData();
+				fnRenderShipTable();
+				fnRemoveTabindex();
+				divContainerGame.style.visibility = "visible";
+			}
+
+			function fnLoad(json = false) {
+				loading = true;
+				if (localStorage.getItem("gbfSE4XgameData")) {
+					if (!json) {
+						gameData = JSON.parse(
+							localStorage.getItem("gbfSE4XgameData")
+						);
+					}
+					if (gameData["appVersion"] !== appVersion) {
+						alert(
+							`The current app version is ${appVersion}. The game data file you're loading is from version ${gameData["appVersion"]} and incompatible! Go to gamesbyfelix.com and look for ${gameData["appVersion"]}, if you want to use this game data file. The game will be reset now.`
+						);
+						fnResetGame();
+					} else {
+						try {
+							settingsCalcMaintenance =
+								gameData["settingsCalcMaintenance"];
+							chkSettingsCalcMaintenance.checked =
+								settingsCalcMaintenance;
+							settingsHideNumPad = gameData["settingsHideNumPad"];
+							chkSettingsHideNumPad.checked = settingsHideNumPad;
+							rulesFacilities = gameData["rulesFacilities"];
+							chkRulesFacilities.checked = rulesFacilities;
+							tblProdFacilities.classList.add("hidden");
+							tblProdNoFacilities.classList.add("hidden");
+							rulesInstantUpgrade =
+								gameData["rulesInstantUpgrade"];
+							chkRulesInstantUpgrade.checked =
+								rulesInstantUpgrade;
+							autoPurchase = gameData["autoPurchase"];
+							chkAutoPurchase.checked = autoPurchase;
+
+							fnInitApp();
+
+							fnPhaseZero();
+							const ph = gameData["phases"];
+							for (let i = 0; i < ph; i++) {
+								fnNewPhase();
+							}
+
+							const econData = gameData["econData"];
+							Object.values(pd).forEach((entry, i) => {
+								entry.value = econData[i];
+							});
+							fnCalcProd();
+
+							shipList = gameData["shipList"];
+
+							tp = gameData["tp"];
+							fnRenderTechProgTable();
+
+							selectedColumn = gameData["selectedColumn"];
+							fnSelectProdCol(selectedColumn);
+
+							txtLog.value = gameData["txtLog"];
+							txtNotes.value = gameData["txtNotes"];
+
+							st = gameData["st"];
+							fnRenderShipTable();
+							showAllShips = gameData["showAllShips"];
+							chkShowAllShips.checked = showAllShips;
+
+							if (!showAllShips) {
+								fnShipShowAllToggle();
+							}
+
+							theme = gameData["theme"];
+							fnSetTheme(theme);
+							document.getElementById("selTheme").value = theme;
+
+							dmsInPlay = gameData["dmsInPlay"];
+							if (dmsInPlay[1].phase !== -1) {
+								fnReadyDMs();
+							}
+						} catch (error) {
+							console.log(error);
+						}
+					}
+				} else {
+					autoPurchase = false;
+					chkAutoPurchase.checked = autoPurchase;
+					rulesFacilities = false;
+					chkRulesFacilities.checked = rulesFacilities;
+					rulesInstantUpgrade = false;
+					chkRulesInstantUpgrade.checked = rulesInstantUpgrade;
+					settingsCalcMaintenance = true;
+					chkSettingsCalcMaintenance.checked =
+						settingsCalcMaintenance;
+					showAllShips = true;
+					chkShowAllShips.checked = showAllShips;
+					tblProdFacilities.classList.add("hidden");
+					tblProdNoFacilities.classList.add("hidden");
+					tblProdsheet = tblProdNoFacilities;
+					txtLog.value = "";
+					txtNotes.value = "";
+					document.getElementById("selTheme").value = "blue";
+					document.getElementById("selPlayerColor").value = "blue";
+					theme = "blue";
+					dmsInPlay[1].phase = -1;
+					fnSetTheme(theme);
+					fnShowNewGameMenu();
+				}
+				loading = false;
+			}
+
+			function fnShowNewGameMenu() {
+				divNewGame.style.display = "block";
+				divNewGameBG.style.display = "block";
+			}
+
+			function fnNewGame() {
+				divNewGame.style.display = "none";
+				divNewGameBG.style.display = "none";
+				fnInitApp();
+				fnLog(`--------- NEW GAME / ${fnGetDate()} ---------`);
+
+				let activeRules = "";
+				let rulesCounter = 0;
+				if (rulesFacilities) {
+					activeRules += "- Facilities\n";
+					rulesCounter++;
+				}
+				if (rulesInstantUpgrade) {
+					activeRules += "- Instant Technology Upgrades\n";
+					rulesCounter++;
+				}
+				if (rulesCounter > 0) {
+					fnLog(`Rules:\n${activeRules}`);
+				}
+				if (document.getElementById("chkScenarioDM").checked) {
+					const selDMSize =
+						document.getElementById("selScenarioDMSize");
+					const selDMDiff =
+						document.getElementById("selScenarioDMDiff");
+					fnLog(
+						`Scenario: Doomsday Machine - ${selDMSize.value} / ${selDMDiff.value}`
+					);
+
+					for (let i = 1; i <= 3; i++) {
+						dmsInPlay[i].phase =
+							dmDiff[selDMSize.value][selDMDiff.value][i][0];
+						dmsInPlay[i].attno =
+							dms[
+								dmDiff[selDMSize.value][selDMDiff.value][i][1]
+							].attno;
+						dmsInPlay[i].att =
+							dms[
+								dmDiff[selDMSize.value][selDMDiff.value][i][1]
+							].att;
+						dmsInPlay[i].def =
+							dms[
+								dmDiff[selDMSize.value][selDMDiff.value][i][1]
+							].def;
+						dmsInPlay[i].hull =
+							dms[
+								dmDiff[selDMSize.value][selDMDiff.value][i][1]
+							].hull;
+						dmsInPlay[i].weakUnconvered = false;
+						dmsInPlay[i].weak = Math.round(fnD10() / 2);
+					}
+					fnReadyDMs();
+					st["SY #1"].size = 4;
+					st["SY #1"].act = true;
+					st["CO"].size = 3;
+					st["CO"].act = true;
+					st["MINER"].size = 1;
+					st["MINER"].act = true;
+					st["SC #1"].size = 1;
+					st["SC #1"].act = true;
+					st["SC #2"].size = 1;
+					st["SC #2"].act = true;
+					st["SC #3"].size = 1;
+					st["SC #3"].act = true;
+					fnRenderShipTable();
+					chkShowAllShips.click();
+				}
+				// fnNewPhase();
+				fnPhaseZero();
+
+				fnSave();
+			}
+
+			function fnResetGame() {
+				Object.keys(localStorage)
+					.filter((key) => key.startsWith("gbfSE4X"))
+					.forEach((key) => localStorage.removeItem(key));
+				window.location.reload();
+			}
+
+			function fnExportGame() {
+				fnSave();
+				const blob = new Blob([JSON.stringify(gameData)], {
+					type: "application/json",
+				});
+
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = `Space Empires 4X Accountant - ${appVersion} - ${new Date()
+					.toISOString()
+					.slice(0, 10)} - Phase-${phases}.json`;
+				document.body.appendChild(a);
+				a.click();
+
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+			}
+
+			function fnImportGame(file) {
+				if (!file) return;
+
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					try {
+						gameData = JSON.parse(e.target.result);
+						fnLoad(true);
+						if (divHelp.style.display === "block") {
+							fnHideHelp();
+						}
+					} catch (err) {
+						console.error("JSON Load Error", err);
+					}
+				};
+
+				reader.readAsText(file);
+			}
+
+			function fnRemoveTabindex() {
+				document
+					.querySelectorAll("*")
+					.forEach((el) => (el.tabIndex = -1));
+			}
+
+			function fnShowShipInfo(group) {
+				let nameAdd = "";
+				let infoText = "";
+				let sep = "";
+				let entries = 1;
+				if (group === "F") {
+					entries = 4;
+					sep = "<br /><br />";
+				}
+				for (let i = 1; i <= entries; i++) {
+					if (group === "F") {
+						nameAdd = i;
+					}
+					const obj = shipList[group + nameAdd];
+					infoText += `<b>${obj.name}</b> (${group})<br />`;
+
+					let maint = "";
+					if (obj.hull !== obj.maint) {
+						maint = ` (${obj.maint} Maintenance)`;
+					}
+					infoText += `<b>Cost:</b> ${obj.cp} CP&emsp;<b>Attack:</b> ${obj.att}&emsp;<b>Defense:</b> ${obj.def}&emsp;<b>Hull:</b> ${obj.hull}${maint}&emsp;`;
+					infoText += `<br />${obj.info}`;
+					infoText += sep;
+				}
+				divInfoContent.innerHTML = infoText;
+
+				divInfo.style.display = "block";
+				divInfo.focus();
+			}
+
+			function fnShowTechInfo(techName) {
+				let infoText = `<b>${techName}</b><br /><table>`;
+
+				Object.values(tp[techName].prog).forEach((value) => {
+					if (value[3]) {
+						let curr = "CP";
+						if (rulesFacilities) {
+							curr = "RP";
+						}
+						let cost = "-";
+						if (parseInt(value[1]) > 0) {
+							cost = `${value[1]} ${curr}`;
+						}
+						infoText += `<tr><td style="white-space: nowrap;">Level ${value[0]}</td><td style="white-space: nowrap;">${cost}</td><td>${value[3]}</td></tr>`;
+					}
+				});
+				infoText += `</table><br />${tp[techName].info || ""}`;
+
+				divInfoContent.innerHTML = infoText;
+
+				divInfo.style.display = "block";
+				divInfo.focus();
+			}
+
+			function fnHideInfo() {
+				divInfo.style.display = "none";
+			}
+
+			function fnShowNotes() {
+				divNotes.style.display = "block";
+				txtNotes.focus();
+			}
+
+			function fnHideNotes() {
+				divNotes.style.display = "none";
+			}
+
+			function fnShowHelp() {
+				divHelp.style.display = "block";
+				divHelp.focus();
+				divHelpBG.style.display = "block";
+			}
+
+			function fnHideHelp() {
+				divHelp.style.display = "none";
+				divHelpBG.style.display = "none";
+			}
+
+			function fnSetTheme(color) {
+				document.body.classList.value = "";
+				document.body.classList.add("theme-dark");
+				document.body.classList.add(`theme-${color}`);
+				theme = color;
+				document.getElementById("selTheme").value = theme;
+				document.getElementById("selPlayerColor").value = theme;
+				fnSave();
+			}
+
+			function fnGetDate() {
+				const now = new Date();
+				const options = {
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
+					hour: "2-digit",
+					minute: "2-digit",
+					hour12: false,
+				};
+
+				return (formatted = new Intl.DateTimeFormat("en-CA", options)
+					.format(now)
+					.replace(",", ""));
+			}
+
+			function fnReadyDMs() {
+				document.getElementById("divDM").style.display = "block";
+				for (let i = 1; i <= 3; i++) {
+					document.getElementById(`tdDM${i}phase`).innerText =
+						dmsInPlay[i].phase;
+					document.getElementById(`tdDM${i}attNo`).innerText =
+						dmsInPlay[i].attno;
+					document.getElementById(`tdDM${i}att`).innerText =
+						dmsInPlay[i].att;
+					document.getElementById(`tdDM${i}def`).innerText =
+						dmsInPlay[i].def;
+					document.getElementById(`spDM${i}hull`).innerText =
+						dmsInPlay[i].hull;
+					if (dmsInPlay[i].weakUnconvered) {
+						document.getElementById(`tdDM${i}weak`).innerText =
+							dmWeaknesses[dmsInPlay[i].weak].title;
+						document.getElementById(`tdDM${i}weak`).title =
+							dmWeaknesses[dmsInPlay[i].weak].desc;
+					} else {
+						document.getElementById(`tdDM${i}weak`).innerText =
+							"uncover";
+					}
+				}
+			}
+
+			function fnAddRemoveDMHull(dm, num) {
+				dmsInPlay[dm].hull += num;
+				document.getElementById(`spDM${dm}hull`).innerText =
+					dmsInPlay[dm].hull;
+				fnLog(`DM #${dm} Hull: ${dmsInPlay[dm].hull}`);
+				fnSave();
+			}
+
+			function fnUncoverDMWeakness(dm) {
+				dmsInPlay[dm].weakUnconvered = true;
+				document.getElementById(`tdDM${dm}weak`).innerText =
+					dmWeaknesses[dmsInPlay[dm].weak].title;
+				document.getElementById(`tdDM${dm}weak`).title =
+					dmWeaknesses[dmsInPlay[dm].weak].desc;
+				fnSave();
+			}
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			const container = document.body;
+			const draggables = document.querySelectorAll(".draggable");
+
+			draggables.forEach((el) => {
+				const handle = el.querySelector(".handle"); // only handle triggers drag
+				let offsetX,
+					offsetY,
+					startX,
+					startY,
+					isDragging = false;
+
+				function start(e) {
+					const point = e.touches ? e.touches[0] : e;
+					startX = point.clientX;
+					startY = point.clientY;
+					offsetX = point.clientX - el.offsetLeft;
+					offsetY = point.clientY - el.offsetTop;
+					isDragging = false;
+
+					document.addEventListener("mousemove", move);
+					document.addEventListener("mouseup", stop);
+					document.addEventListener("touchmove", move, {
+						passive: false,
+					});
+					document.addEventListener("touchend", stop);
+				}
+
+				function move(e) {
+					const point = e.touches ? e.touches[0] : e;
+
+					const dx = Math.abs(point.clientX - startX);
+					const dy = Math.abs(point.clientY - startY);
+					if (dx > 5 || dy > 5) isDragging = true;
+
+					if (!isDragging) return;
+
+					e.preventDefault();
+
+					const x = point.clientX - container.offsetLeft - offsetX;
+					const y = point.clientY - container.offsetTop - offsetY;
+
+					const maxX = container.clientWidth - el.clientWidth;
+					const maxY = container.clientHeight - el.clientHeight;
+
+					el.style.left = Math.max(0, Math.min(x, maxX)) + "px";
+					el.style.top = Math.max(0, Math.min(y, maxY)) + "px";
+				}
+
+				function stop() {
+					if (isDragging) {
+						localStorage.setItem(
+							el.id,
+							JSON.stringify({
+								left: el.style.left,
+								top: el.style.top,
+							})
+						);
+					}
+					document.removeEventListener("mousemove", move);
+					document.removeEventListener("mouseup", stop);
+					document.removeEventListener("touchmove", move);
+					document.removeEventListener("touchend", stop);
+				}
+
+				handle.addEventListener("mousedown", start);
+				handle.addEventListener("touchstart", start, { passive: true });
+			});
+
+			document
+				.getElementById("inJSONFile")
+				.addEventListener("change", function () {
+					fnImportGame(this.files[0]);
+				});
+
+			document.addEventListener(
+				"wheel",
+				(e) => {
+					if (
+						e.target.tagName === "INPUT" &&
+						e.target.type === "number" &&
+						e.target === document.activeElement
+					) {
+						e.preventDefault();
+						const val = parseInt(e.target.value) || 0;
+						let step = 1;
+						if (e.shiftKey) {
+							step = 5;
+						}
+						if (e.deltaY < 0) {
+							e.target.value = val + step;
+						} else {
+							e.target.value = val - step;
+							if (e.target.value <= 0) {
+								e.target.value = 0;
+							}
+						}
+						e.target.dispatchEvent(new Event("change"));
+					}
+				},
+				{ passive: false }
+			);
+
+			document.addEventListener("keydown", (e) => {
+				if (e.key === "Escape") {
+					if (
+						document.activeElement &&
+						(document.activeElement.tagName === "INPUT" ||
+							document.activeElement.tagName === "TEXTAREA")
+					) {
+						document.activeElement.blur();
+					} else {
+						if (divHelp.style.display !== "none") {
+							fnHideHelp();
+						} else if (divDice.style.display !== "none") {
+							fnHideDice();
+						} else if (divNotes.style.display !== "none") {
+							fnHideNotes();
+						} else if (divInfo.style.display !== "none") {
+							fnHideInfo();
+						}
+					}
+				}
+
+				if (
+					e.key === "ArrowUp" &&
+					e.target.tagName === "INPUT" &&
+					e.target.type === "number"
+				) {
+					e.preventDefault();
+					const val = parseInt(e.target.value) || 0;
+					e.target.value = val + 5;
+					e.target.dispatchEvent(new Event("change"));
+				}
+				if (
+					e.key === "ArrowDown" &&
+					e.target.tagName === "INPUT" &&
+					e.target.type === "number"
+				) {
+					e.preventDefault();
+					const val = parseInt(e.target.value) || 0;
+					e.target.value = val - 5;
+					e.target.dispatchEvent(new Event("change"));
+				}
+				if (
+					e.key === "ArrowLeft" &&
+					e.target.tagName === "INPUT" &&
+					e.target.type === "number"
+				) {
+					e.preventDefault();
+					const val = parseInt(e.target.value) || 0;
+					e.target.value = val - 1;
+					e.target.dispatchEvent(new Event("change"));
+				}
+				if (
+					e.key === "ArrowRight" &&
+					e.target.tagName === "INPUT" &&
+					e.target.type === "number"
+				) {
+					e.preventDefault();
+					const val = parseInt(e.target.value) || 0;
+					e.target.value = val + 1;
+					e.target.dispatchEvent(new Event("change"));
+				}
+
+				if (
+					(e.target.tagName === "INPUT" &&
+						[
+							"text",
+							"number",
+							"email",
+							"password",
+							"search",
+							"url",
+							"tel",
+						].includes(e.target.type)) ||
+					e.target.tagName === "TEXTAREA" ||
+					e.target.isContentEditable
+				) {
+					// ignore
+				} else {
+					if (
+						e.key.toLowerCase() === "n" &&
+						e.shiftKey &&
+						!e.ctrlKey
+					) {
+						e.preventDefault();
+						fnNewPhase();
+					}
+
+					if (
+						e.key.toLowerCase() === "n" &&
+						!e.shiftKey &&
+						!e.ctrlKey
+					) {
+						e.preventDefault();
+						fnShowNotes();
+					}
+
+					if (
+						e.key.toLowerCase() === "d" &&
+						!e.shiftKey &&
+						!e.ctrlKey
+					) {
+						e.preventDefault();
+						fnDice("all");
+					}
+
+					if (e.key.toLowerCase() === "s" && !e.ctrlKey) {
+						e.preventDefault();
+						divShip.scrollIntoView({
+							behavior: "smooth",
+							block: "start",
+						});
+					}
+
+					if (
+						e.key.toLowerCase() === "s" &&
+						e.shiftKey &&
+						!e.ctrlKey
+					) {
+						e.preventDefault();
+						chkShowAllShips.click();
+					}
+
+					if (e.key.toLowerCase() === "p" && e.shiftKey) {
+						e.preventDefault();
+						chkAutoPurchase.click();
+					}
+
+					if (e.key.toLowerCase() === "h") {
+						e.preventDefault();
+						if (divHelp.style.display !== "block") {
+							fnShowHelp();
+						} else {
+							fnHideHelp();
+						}
+					}
+
+					if (e.key.toLowerCase() === "e") {
+						e.preventDefault();
+						divProd.scrollIntoView({
+							behavior: "smooth",
+							block: "start",
+						});
+					}
+
+					if (e.key.toLowerCase() === "t") {
+						e.preventDefault();
+						divTech.scrollIntoView({
+							behavior: "smooth",
+							block: "start",
+						});
+					}
+
+					if (e.key.toLowerCase() === "f") {
+						// focus current phases first text input field
+						e.preventDefault();
+						fnSelectProdCol(phases);
+						document
+							.getElementById(`prodCell${phases}-${2}`)
+							.focus();
+					}
+
+					if (
+						e.key.toLowerCase() === "p" &&
+						e.ctrlKey & !e.shiftKey
+					) {
+						e.preventDefault();
+						fnResetGame();
+					}
+
+					if (
+						e.key.toLowerCase() === "e" &&
+						e.ctrlKey & !e.shiftKey
+					) {
+						e.preventDefault();
+						fnExportGame();
+					}
+
+					if (
+						e.key.toLowerCase() === "i" &&
+						e.ctrlKey & !e.shiftKey
+					) {
+						e.preventDefault();
+						document.getElementById("inJSONFile").click();
+					}
+				}
+			});
+
+			const numPadEls = document.querySelectorAll('[id^="divNumPad"]');
+			numPadEls.forEach((e) => {
+				e.addEventListener("mousedown", (e) => {
+					e.preventDefault(); // Prevent input from losing focus
+				});
+			});
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			spAppVersion.innerHTML = appVersion + " / " + appDate;
+			spNewGameInfo.innerHTML =
+				appVersion + " / " + appDate + "<br />" + licenseInfo;
+
+			document.title = "Space Empires 4X Accountant - " + appVersion;
+			fnLoad();
+		</script>
+	</body>
+</html>
