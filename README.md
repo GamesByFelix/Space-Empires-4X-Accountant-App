@@ -1,5 +1,5 @@
 # Space Empires 4X Accountant App
-A web app that helps you with the spread-sheets in GMT's Space Empires 4X board game.
+A web app that helps you with the spread-sheets in GMT's Space Empires 4X board game.  
 https://www.gmtgames.com/p-979-space-empires-5th-printing.aspx
 
 It offers an automated Production table and interactive Technology and Ship tables.
